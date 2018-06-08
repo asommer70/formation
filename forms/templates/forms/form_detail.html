@@ -7,6 +7,8 @@
   <p>Public: <input name="public" type="checkbox" disabled {% if form.public %}checked{% endif %}/></p>
 
   <hr/>
+
+  <a href="{% url 'forms:update' pk=form.pk %}" class="button">Edit Form</a>
   
 
 {% endblock %}

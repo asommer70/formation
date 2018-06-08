@@ -4,9 +4,11 @@
 
   <h1>Forms</h1>
 
+  <a href="{% url 'forms:create' %}" class="button small">New Form</a>
+
   <ul>
     {% for form in forms %}
-      <li>{{form.name}}</li>
+      <li><a href="{% url 'forms:detail' pk=form.pk %}">{{form.name}}</a></li>
     {% endfor %}
   </ul>
 

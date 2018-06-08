@@ -31,11 +31,7 @@ class FormCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 class FormUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     fields = ['name', 'public']
     model = Form
-    # success_url = reverse_lazy('forms:detail')
     success_message = "Form updated."
-
-    # def get_success_url(self):
-    #    reverse_lazy('forms:detail', kwarks={'pk': self.object.pk})
 
 
 class FormDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
