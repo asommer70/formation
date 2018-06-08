@@ -1,0 +1,58 @@
+from django.contrib.auth import get_user_model
+from django.test import TestCase, RequestFactory, Client
+from django.urls import reverse
+from forms.models import Form
+
+
+User = get_user_model()
+
+
+class FormViewsTestCase(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+
+        self.form = Form.objects.create(
+            name='Test Form',
+            path='media/forms/test_form.html'
+        )
+
+        self.user = User.objects.create(
+            username="tester",
+            email="tester@thehoick.com",
+            password="tests",
+            is_staff=True
+        )
+
+    def test_list_unauthenticated(self):
+        login_url = '/accounts/login'
+        response = self.client.get(reverse('forms:list'), follow=True)
+        self.assertRedirects(response, login_url + '/?next=/forms/')
+
+    def test_list_authenticated(self):
+        url = reverse('forms:list')
+        self.client.force_login(user=self.user)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['forms'].count(), 1)
+
+    def test_form_create(self):
+        url = reverse('forms:create')
+        self.client.force_login(user=self.user)
+
+        response = self.client.post(url, {'name': 'Test POST Form'})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/forms/')
+        self.assertEqual(Form.objects.all().count(), 2)
+
+    def test_form_detail(self):
+        url = reverse('form:detail', kwargs={'pk': self.form.pk})
+        self.client.force_login(user=self.user)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].public, False)
