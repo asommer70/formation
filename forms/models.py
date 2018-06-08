@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Form(models.Model):
@@ -14,3 +15,6 @@ class Form(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('forms:detail', kwargs={'pk': self.pk})

@@ -4,4 +4,10 @@
 
   <h1>Forms</h1>
 
+  <ul>
+    {% for form in forms %}
+      <li>{{form.name}}</li>
+    {% endfor %}
+  </ul>
+
 {% endblock %}

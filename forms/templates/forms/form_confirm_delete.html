@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <h1>Really Delete {{form.name}}?</h1>
+  <br />
+
+  <form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Delete" class="button small alert">
+    &nbsp;&nbsp;
+    <a href="{% url 'forms:detail' pk=form.pk %}" class="button large secondary">Cancel</a>
+  </form>  
+
+{% endblock %}

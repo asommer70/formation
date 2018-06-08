@@ -49,10 +49,30 @@ class FormViewsTestCase(TestCase):
         self.assertEqual(Form.objects.all().count(), 2)
 
     def test_form_detail(self):
-        url = reverse('form:detail', kwargs={'pk': self.form.pk})
+        url = reverse('forms:detail', kwargs={'pk': self.form.pk})
         self.client.force_login(user=self.user)
 
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].public, False)
+
+    def test_form_update(self):
+        url = reverse('forms:update', kwargs={'pk': self.form.pk})
+        self.client.force_login(user=self.user)
+
+        response = self.client.post(url, {'public': True})
+        form = Form.objects.get(pk=self.form.pk)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/forms/{}'.format(form.pk))
+        self.assertEqual(form.public, True)
+
+    def test_form_delete(self):
+        url = reverse('forms:delete', kwargs={'pk': self.form.pk})
+        self.client.force_login(user=self.user)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'forms/form_confirm_delete.html')
