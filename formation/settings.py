@@ -62,7 +62,7 @@ ROOT_URLCONF = 'formation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': ['templates', BASE_DIR + '/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,6 +136,9 @@ STATICFILES_DIRS = (
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+
+LOGIN_REDIRECT_URL = "forms:list"
 
 
 # REST rest_framework

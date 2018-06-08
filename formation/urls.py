@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from .views import IndexView
 
@@ -6,5 +7,7 @@ from .views import IndexView
 urlpatterns = [
     path('forms/', include('forms.urls', namespace='forms')),
     path('admin/', admin.site.urls),
+    path('accounts/login/', auth_views.login, name='login'),
+    path('accounts/logout/', auth_views.logout, name='logout'),
     path('', IndexView.as_view()),
 ]
