@@ -3,7 +3,7 @@
 {% block body %}
   
   <h1>{% if not form.instance.pk %}Create Form{% else %}Edit {{form.instance.name}}{% endif %}</h1>
-  <br />pf
+  <br />
   
   <div class="row">
     <div class="column small-12 large-4">
@@ -11,6 +11,9 @@
 	{{ form.as_p }}
 	{% csrf_token %}
 	<input class="button" type="submit" value="Save" />
+
+	<label for="form_contnet">Content</label>
+	<textarea cols="30" id="form_content" name="content" class="content" rows="10"></textarea>
       </form>
     </div>
   </div>

@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const assets =  '../assets/js/vendor/';
+const cssAssets = '../assets/css/vendor/';
 
 if (!fs.existsSync('../assets')) {
   fs.mkdirSync('../assets');
@@ -29,3 +30,9 @@ fs.createReadStream('./node_modules/foundation-sites/dist/js/foundation.min.js')
 fs.createReadStream('./node_modules/jquery/dist/jquery.min.js')
   .pipe(fs.createWriteStream(assets + 'jquery.min.js'));
 
+
+fs.createReadStream('./node_modules/codemirror/lib/codemirror.js')
+  .pipe(fs.createWriteStream(assets + 'codemirror.js'));
+
+fs.createReadStream('node_modules/codemirror/lib/codemirror.css')
+  .pipe(fs.createWriteStream(cssAssets + 'codemirror.css'));

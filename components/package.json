@@ -18,6 +18,7 @@
   "author": "Adam Sommer",
   "license": "MIT",
   "dependencies": {
+    "codemirror": "^5.38.0",
     "foundation-sites": "^6.4.4-rc1",
     "jquery": "^3.3.1",
     "vuejs": "^3.0.1"
