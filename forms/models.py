@@ -8,6 +8,7 @@ class Form(models.Model):
 
     name = models.CharField(max_length=255, blank=True, null=True, unique=True)
     path = models.CharField(max_length=255, blank=True, null=True)
+    content = models.TextField(max_length=20000, blank=True, null=True)
     public = models.BooleanField(default=False)
 
     class Meta:
