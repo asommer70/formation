@@ -2,7 +2,15 @@
 
 {% block body %}
 
-  <h1>Form {{form.name}}</h1>
+  <h1>Form Name: <em>{{form.name}}</em></h1>
+
+  <p>Content:</p>
+  <div class="form-content">
+    {% autoescape off %}
+      {{form.content}}
+    {% endautoescape %}
+  </div>
+  
   <br />
   <p>Public: <input name="public" type="checkbox" disabled {% if form.public %}checked{% endif %}/></p>
 

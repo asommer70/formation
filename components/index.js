@@ -34,5 +34,11 @@ fs.createReadStream('./node_modules/jquery/dist/jquery.min.js')
 fs.createReadStream('./node_modules/codemirror/lib/codemirror.js')
   .pipe(fs.createWriteStream(assets + 'codemirror.js'));
 
+fs.createReadStream('./node_modules/codemirror/mode/xml/xml.js')
+  .pipe(fs.createWriteStream(assets + 'xml.js'));
+
+fs.createReadStream('./node_modules/codemirror/mode/htmlmixed/htmlmixed.js')
+  .pipe(fs.createWriteStream(assets + 'htmlmixed.js'));
+
 fs.createReadStream('node_modules/codemirror/lib/codemirror.css')
   .pipe(fs.createWriteStream(cssAssets + 'codemirror.css'));

@@ -1,17 +1,11 @@
 $(document).ready(function() {
   $(document).foundation();
 
-  CodeMirror.fromTextArea(document.getElementById("id_content"), {
-    lineNumbers: true,
-    mode: "html",
-    smartIndent: true
-  });
+  if ($('#id_content').length) {
+    CodeMirror.fromTextArea(document.getElementById("id_content"), {
+      lineNumbers: true,
+      mode: "htmlmixed"
+    });
+  }
 
 });
-
-
-
-
-
-
-
