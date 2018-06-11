@@ -2,21 +2,30 @@
 
 {% block body %}
 
-  <h1>Form Name: <em>{{form.name}}</em></h1>
+  <div class="row">
+    <div class="column small-12 large-10">
+      <h1>Form Name: <em>{{form.name}}</em></h1>
 
-  <p>Content:</p>
+    </div>
+
+    <div class="large-2 small-12">
+      <a href="{% url 'forms:update' pk=form.pk %}" class="button small secondary">Edit Form</a>
+    </div>
+  </div>
+
   <div class="form-content">
     {% autoescape off %}
       {{form.content}}
     {% endautoescape %}
+
+    <br/>
+    <button type="button" class="button default">Create</button>
+
   </div>
   
   <br />
-  <p>Public: <input name="public" type="checkbox" disabled {% if form.public %}checked{% endif %}/></p>
 
   <hr/>
-
-  <a href="{% url 'forms:update' pk=form.pk %}" class="button">Edit Form</a>
   
 
 {% endblock %}
