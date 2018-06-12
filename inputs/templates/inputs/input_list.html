@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <h1>Inbox</h1>
+
+  <ul>
+    {% for input in inputs %}
+      <li>
+	{{input.form.name}} - {{input.created_at}}
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

@@ -24,13 +24,19 @@ if (!fs.existsSync('../assets')) {
   }
 }
 
+
+// Foundation and jQuery.
 fs.createReadStream('./node_modules/foundation-sites/dist/js/foundation.min.js')
   .pipe(fs.createWriteStream(assets + 'foundation.min.js'));
 
 fs.createReadStream('./node_modules/jquery/dist/jquery.min.js')
   .pipe(fs.createWriteStream(assets + 'jquery.min.js'));
 
+fs.createReadStream('./node_modules/jQuery.serializeObject/dist/jquery.serializeObject.min.js')
+  .pipe(fs.createWriteStream(assets + 'jquery.serializeObject.min.js'));
 
+
+// CodeMirror
 fs.createReadStream('./node_modules/codemirror/lib/codemirror.js')
   .pipe(fs.createWriteStream(assets + 'codemirror.js'));
 
@@ -42,3 +48,8 @@ fs.createReadStream('./node_modules/codemirror/mode/htmlmixed/htmlmixed.js')
 
 fs.createReadStream('node_modules/codemirror/lib/codemirror.css')
   .pipe(fs.createWriteStream(cssAssets + 'codemirror.css'));
+
+
+// Vue
+fs.createReadStream('node_modules/vue/dist/vue.min.js')
+  .pipe(fs.createWriteStream(assets + 'vue.min.js'));

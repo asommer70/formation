@@ -6,6 +6,7 @@ from .views import IndexView
 
 urlpatterns = [
     path('forms/', include('forms.urls', namespace='forms')),
+    path('inbox/', include('inputs.urls', namespace='inbox')),
     path('admin/', admin.site.urls),
     path('accounts/login/', auth_views.login, name='login'),
     path('accounts/logout/', auth_views.logout, name='logout'),

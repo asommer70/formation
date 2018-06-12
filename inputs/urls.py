@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'inbox'
 urlpatterns = [
-    path('', views.FormListView.as_view(), name='list'),
+    path('', views.InputListView.as_view(), name='list'),
     path('create', views.InputCreateView.as_view(), name='create'),
     # path('<int:pk>', views.FormDetailView.as_view(), name='detail'),
     # path('<int:pk>/edit', views.FormUpdateView.as_view(), name='update'),
