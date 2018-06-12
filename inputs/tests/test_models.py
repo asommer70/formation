@@ -14,7 +14,7 @@ class InputTestCase(TestCase):
             password='testers',
             email='test@thehoick.com'
         )
-        
+
         self.form = Form.objects.create(
             name='Test Form',
             path='media/forms/test_form.html'

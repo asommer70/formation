@@ -19,16 +19,25 @@ $(document).ready(function() {
 	// Serialize form into a JSON object to send to /inbox/create.
 	var $form = $('#input-form');
 	var formData = $form.serializeObject();
-	var csrf = $('[name="csrfmiddlewaretoken"]').val();
-	console.log('csrf:', csrf);
 	var data = {
 	  form: $form.attr('name'),
 	  data: formData,
-	  csrfmiddlewaretoken: csrf
+	  user: userId
 	};
 
-	$.post('/inbox/create', data, function(data) {
-	  console.log('post data:', data);
+	console.log('data:', data);
+
+	$.ajax({
+	  url: '/api/inbox/',
+	  method: 'post',
+	  data: data,
+	  headers: {
+	    Authorization: 'Token ' + token,
+	    contentType: 'application/json; charset=utf-8'
+	  },
+	  success: function(data) {
+	    console.log('post data:', data);
+	  }
 	});
       }
     },

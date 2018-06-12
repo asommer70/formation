@@ -12,7 +12,7 @@ class Input(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     status = models.CharField(max_length=255, default="new")
-    data = JSONField()
+    data = JSONField(blank=True, null=True)
     route_date = models.DateTimeField(blank=True, null=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
