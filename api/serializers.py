@@ -1,15 +1,16 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from inputs.models import Input
 from forms.models import Form
 
 
-class JSONSerializerField(serializers.Field):
-    """ Serializer for JSONField -- required to make field writable"""
-    def to_internal_value(self, data):
-        return data
+User = get_user_model()
 
-    def to_representation(self, value):
-        return value
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('username', 'email')
+        model = User
 
 
 class FormSerializer(serializers.ModelSerializer):

@@ -12,8 +12,10 @@
 	{% csrf_token %}
 
 
-	<input class="button" type="submit" value="Save" /> 
-	<a href="{% url 'forms:detail' pk=form.instance.pk %}" class="button secondary">Cancel</a>
+	<input class="button" type="submit" value="Save" />
+	{% if form.instance.pk %}
+	  <a href="{% url 'forms:detail' pk=form.instance.pk %}" class="button secondary">Cancel</a>
+	{% endif %}
       </form>
     </div>
   </div>

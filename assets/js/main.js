@@ -21,11 +21,9 @@ $(document).ready(function() {
 	var formData = $form.serializeObject();
 	var data = {
 	  form: $form.attr('name'),
-	  data: formData,
+	  data: JSON.stringify(formData),
 	  user: userId
 	};
-
-	console.log('data:', data);
 
 	$.ajax({
 	  url: '/api/inbox/',
