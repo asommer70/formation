@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
-from django.http import JsonResponse
+
 from .serializers import FormSerializer, InputSerializer
 from forms.models import Form
 from inputs.models import Input

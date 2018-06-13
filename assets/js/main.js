@@ -11,9 +11,12 @@ $(document).ready(function() {
   }
 
   // Create Vue app for creating Inputs.
-  new Vue ({
+  Vue.config.devtools = true;
+  window.app = new Vue ({
     el: '.form-content',
-    data:  { } ,
+    data:  {
+      input: {}
+    },
     methods: {
       submitForm: function(event) {
 	// Serialize form into a JSON object to send to /inbox/create.
@@ -41,7 +44,25 @@ $(document).ready(function() {
     },
     created: function() {
       console.log('Vue app...');
+      var pathParts = window.location.pathname.split('/');
+      if (pathParts[pathParts.length - 1] !== "" && pathParts[1] === "inbox") {
+	console.log('Input...');
+	$.ajax({
+	  url: '/api/inbox/' + pathParts[pathParts.length - 1],
+	  method: 'get',
+	  headers: {
+	    Authorization: 'Token ' + token,
+	    contentType: 'application/json; charset=utf-8'
+	  },
+	  success: function(data) {
+	    console.log('input data:', data.data);
+	    this.input = data.data;
+	  }
+	});
+      }
     }
   });
-
 });
+
+
+

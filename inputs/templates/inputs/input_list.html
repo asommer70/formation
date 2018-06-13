@@ -7,7 +7,7 @@
   <ul>
     {% for input in inputs %}
       <li>
-	{{input.form.name}} - {{input.created_at}}
+	<a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - {{input.created_at}}
       </li>
     {% endfor %}
   </ul>

@@ -21,3 +21,7 @@ class InputCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     fields = ['data', 'form']
     model = Input
     success_url = reverse_lazy('inbox')
+
+
+class InputDetailView(LoginRequiredMixin, DetailView):
+    model = Input
