@@ -22,6 +22,7 @@ class FormTestCase(TestCase):
     def test_create(self):
         self.assertEqual(self.form.name, 'Test Form')
         self.assertFalse(self.form.public)
+        self.assertTrue(':value' in self.form.content)
 
     def test_update(self):
         self.form.public = True

@@ -9,6 +9,7 @@
     {{form.as_p}}
     {% csrf_token %}
     <input class="button alert" type="submit" value="Confirm Delete"/>
+    <a class="button large secondary" href="{% url 'inbox:detail' pk=input.pk %}">Cancel</a>
   </form>
   
 {% endblock %}

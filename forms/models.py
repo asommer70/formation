@@ -29,14 +29,15 @@ class Form(models.Model):
         from pyquery import PyQuery as pq
         if not self.pk:
             content = pq(self.content)
-            # print('content(input).name:', content('input').attr('name'))
+            # content.wrap('')
             inputs = content('input')
             print('inputs:', inputs)
+
             for input in inputs:
                 input = pq(input)
                 if not input.attr(':value'):
-                    print('input.attr(:value):', input.attr(':value'))
-                    input.attr(':value', 'this.input.' + input.attr('name'))
-                    print('input:', input.html())
-
+                    print(':value:', input.attr(':value'))
+                    print('this.input name:', ':value="this.input.' + input.attr('name') + '"')
+                    input.attr('title', 'this.input.' + input.attr('name'))
+            self.content = content
         super(Form, self).save(*args, **kwargs)
