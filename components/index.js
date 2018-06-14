@@ -51,5 +51,8 @@ fs.createReadStream('node_modules/codemirror/lib/codemirror.css')
 
 
 // Vue
+fs.createReadStream('node_modules/vue/dist/vue.js')
+  .pipe(fs.createWriteStream(assets + 'vue.js'));
+
 fs.createReadStream('node_modules/vue/dist/vue.min.js')
   .pipe(fs.createWriteStream(assets + 'vue.min.js'));

@@ -9,5 +9,5 @@ urlpatterns = [
     path('<int:pk>', views.InputDetailView.as_view(), name='detail'),
     # path('<int:pk>/edit', views.FormUpdateView.as_view(), name='update'),
     # path('<int:pk>/edit', views.PropertyUpdateView.as_view(), name='update'),
-    # path('<int:pk>/delete', views.FormDeleteView.as_view(), name='delete'),
+    path('<int:pk>/delete', views.InputDeleteView.as_view(), name='delete'),
 ]

@@ -20,9 +20,10 @@
 	  {% endautoescape %}
 
 	  <br/><hr/>
+	  <button type="button" class="button success" @click="submitForm">Update</button>
 	  <button type="button" class="button default">Route</button>
+	  <a href="{% url 'inbox:delete' pk=input.pk %}" class="button tiny alert float-right">Delete</a>
 	</form>
-	<p>this.input: {{this}}</p>
       </div>
       
     </div>

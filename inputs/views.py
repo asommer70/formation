@@ -25,3 +25,15 @@ class InputCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 class InputDetailView(LoginRequiredMixin, DetailView):
     model = Input
+
+
+class InputUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    fields = ['data']
+    model = Input
+    success_message = "Update successful."
+
+
+class InputDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Input
+    success_url = reverse_lazy('inbox:list')
+    success_message = "Deletion complete."

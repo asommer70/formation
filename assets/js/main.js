@@ -11,58 +11,69 @@ $(document).ready(function() {
   }
 
   // Create Vue app for creating Inputs.
-  Vue.config.devtools = true;
-  window.app = new Vue ({
-    el: '.form-content',
-    data:  {
-      input: {}
-    },
-    methods: {
-      submitForm: function(event) {
-	// Serialize form into a JSON object to send to /inbox/create.
-	var $form = $('#input-form');
-	var formData = $form.serializeObject();
-	var data = {
-	  form: $form.attr('name'),
-	  data: JSON.stringify(formData),
-	  user: userId
-	};
+  if ($('.form-content').length) {
+    Vue.config.devtools = true;
+    window.app = new Vue ({
+      el: '.form-content',
+      data:  {
+	input: {},
+	pathParts: null
+      },
+      methods: {
+	submitForm: function(event) {
+	  // Serialize form into a JSON object to send to /inbox/create.
+	  var $form = $('#input-form');
+	  var formData = $form.serializeObject();
+	  var data = {
+	    form: $form.attr('name'),
+	    data: JSON.stringify(formData),
+	    user: userId
+	  };
 
-	$.ajax({
-	  url: '/api/inbox/',
-	  method: 'post',
-	  data: data,
-	  headers: {
-	    Authorization: 'Token ' + token,
-	    contentType: 'application/json; charset=utf-8'
-	  },
-	  success: function(data) {
-	    console.log('post data:', data);
+	  var url, method;
+	  if (this.pathParts[this.pathParts.length - 1] !== "" && this.pathParts[this.pathParts.length - 1] !== "Delete") {
+	    url = '/api/inbox/' + this.pathParts[this.pathParts.length - 1];
+	    method = 'put';
+          } else {
+	    url = '/api/inbox/';
+	    method = 'post';
 	  }
-	});
+	  
+  	  $.ajax({
+	    url: url,
+	    method: method,
+	    data: data,
+	    headers: {
+	      Authorization: 'Token ' + token,
+	      contentType: 'application/json; charset=utf-8'
+	    },
+	    success: function(data) {
+	      console.log('post data:', data);
+	      window.location.href = '/inbox/' + data.id;
+	    }
+	  });
+	}
+      },
+      created: function() {
+	this.pathParts = window.location.pathname.split('/');
+	if (this.pathParts[this.pathParts.length - 1] !== "" && this.pathParts[this.pathParts.length - 1] !== "delete" && this.pathParts[1] === "inbox") {
+	  self = this;
+	  $.ajax({
+	    url: '/api/inbox/' + this.pathParts[this.pathParts.length - 1],
+	    method: 'get',
+	    headers: {
+	      Authorization: 'Token ' + token,
+	      contentType: 'application/json; charset=utf-8'
+	    },
+	    success: function(data) {
+	      console.log('input data:', data.data);
+	      if (data.data) {
+		self.input = data.data;
+	      }
+	    }
+	  });
+	}
       }
-    },
-    created: function() {
-      console.log('Vue app...');
-      var pathParts = window.location.pathname.split('/');
-      if (pathParts[pathParts.length - 1] !== "" && pathParts[1] === "inbox") {
-	console.log('Input...');
-	$.ajax({
-	  url: '/api/inbox/' + pathParts[pathParts.length - 1],
-	  method: 'get',
-	  headers: {
-	    Authorization: 'Token ' + token,
-	    contentType: 'application/json; charset=utf-8'
-	  },
-	  success: function(data) {
-	    console.log('input data:', data.data);
-	    this.input = data.data;
-	  }
-	});
-      }
-    }
-  });
+    });
+  }
 });
-
-
-
