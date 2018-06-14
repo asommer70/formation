@@ -24,3 +24,19 @@ class Form(models.Model):
 
     def get_absolute_url(self):
         return reverse('forms:detail', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs):
+        from pyquery import PyQuery as pq
+        if not self.pk:
+            content = pq(self.content)
+            # print('content(input).name:', content('input').attr('name'))
+            inputs = content('input')
+            print('inputs:', inputs)
+            for input in inputs:
+                input = pq(input)
+                if not input.attr(':value'):
+                    print('input.attr(:value):', input.attr(':value'))
+                    input.attr(':value', 'this.input.' + input.attr('name'))
+                    print('input:', input.html())
+
+        super(Form, self).save(*args, **kwargs)

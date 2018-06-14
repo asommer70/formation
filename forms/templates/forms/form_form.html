@@ -15,6 +15,7 @@
 	<input class="button" type="submit" value="Save" />
 	{% if form.instance.pk %}
 	  <a href="{% url 'forms:detail' pk=form.instance.pk %}" class="button secondary">Cancel</a>
+	  <a href="{% url 'forms:delete' pk=form.instance.pk %}" class="button tiny alert float-right">Delete</a>
 	{% endif %}
       </form>
     </div>

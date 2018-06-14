@@ -8,9 +8,15 @@ User = get_user_model()
 
 class FormTestCase(TestCase):
     def setUp(self):
+        content = """
+          <input type="text" name="test" />
+          <br/>
+          <input type="text" name="beans" />
+        """
         self.form = Form.objects.create(
             name='Test Form',
-            path='media/forms/test_form.html'
+            path='media/forms/test_form.html',
+            content=content
         )
 
     def test_create(self):
