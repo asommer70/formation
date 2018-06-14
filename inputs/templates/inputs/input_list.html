@@ -7,9 +7,13 @@
   <ul>
     {% for input in inputs %}
       <li>
-	<a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - {{input.created_at}}
+	<a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - <small>{{input.created_at|date:"m/d/Y f"}}</small>
       </li>
     {% endfor %}
   </ul>
+
+  {% if not inputs %}
+    <p>Nothing in the Inbox at this time.</p>
+  {% endif %}
 
 {% endblock %}

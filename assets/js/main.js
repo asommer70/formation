@@ -31,13 +31,14 @@ $(document).ready(function() {
 	  };
 
 	  var url, method;
-	  if (this.pathParts[this.pathParts.length - 1] !== "" && this.pathParts[this.pathParts.length - 1] !== "Delete") {
+	  if (this.pathParts[this.pathParts.length - 1] !== "" && this.pathParts[1] !== 'forms' && this.pathParts[this.pathParts.length - 1] !== "Delete") {
 	    url = '/api/inbox/' + this.pathParts[this.pathParts.length - 1];
 	    method = 'put';
           } else {
 	    url = '/api/inbox/';
 	    method = 'post';
 	  }
+	  console.log('url:', url, 'method:', method, 'this.pathParts:', this.pathParts);
 	  
   	  $.ajax({
 	    url: url,

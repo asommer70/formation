@@ -1,4 +1,5 @@
 {% load static %}
+{% load has_group %}
 
 <!DOCTYPE html>
 <html>
@@ -16,21 +17,33 @@
       <div class="top-bar-left">
 	<ul class="dropdown menu" data-dropdown-menu>
 	  <li><a href="/">Formation</a></li>
+	  {% if user.is_authenticated %}
 	  <li>
             <a href="/inbox">Inbox</a>
 	  </li>
 	  <li><a href="/archive">Archive</a></li>
+	  {% endif %}
 	</ul>
       </div>
       <div class="top-bar-right">
 	<ul class="dropdown menu" data-dropdown-menu>
+	  {% if request.user.is_authenticated %}
+	    <li><a href="/accounts/logout">Logout</a></li>
+	  {% else %}
+	    <li><a href="/accounts/login">Login</a></li>
+	  {% endif %}
+	  {% if user.is_authenticated and user|has_group:"Admin" %}
 	  <li class="has-submenu">
             <a href="/form-admin">Admin</a>
             <ul class="submenu menu vertical" data-dropdown-menu>
               <li><a href="/form-admin">Forms</a></li>
               <li><a href="form-routes">Routes</a></li>
+	      {% if user.is_superuser %}
+		<li><a href="/admin">Django Admin</a></li>
+              {% endif %}
             </ul>
 	  </li>
+	  {% endif %}
 	</ul>
       </div>
     </div>

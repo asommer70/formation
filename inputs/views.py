@@ -16,6 +16,12 @@ class InputListView(LoginRequiredMixin, ListView):
     model = Input
     paginate_by = 10
 
+    def get_queryset(self, *args, **kwargs):
+        qs = super(InputListView, self).get_queryset(*args, **kwargs).filter(
+            user=self.request.user
+        )
+        return qs
+
 
 class InputCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     fields = ['data', 'form']
