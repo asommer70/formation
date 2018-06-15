@@ -13,11 +13,25 @@ class FormTestCase(TestCase):
           <br/>
           <input type="text" name="beans" />
           <br/>
+          <input type="number" name="size" />
+          <br/>
           <textarea name="desc"></textarea>
           <br/>
           <input type="checkbox" name="tacos" />
           <input name="yes_or_no" type="radio" value="no" />
           <input name="yes_or_no" type="radio" value="yes" />
+          <br/>
+          <select id="selector" name="selector">
+           <option value="first">
+            First Value
+           </option>
+           <option selected="" value="second">
+            Second Value
+           </option>
+           <option value="third">
+            Third Value
+           </option>
+          </select>
         """
         self.form = Form.objects.create(
             name='Test Form',
@@ -29,9 +43,11 @@ class FormTestCase(TestCase):
         self.assertEqual(self.form.name, 'Test Form')
         self.assertFalse(self.form.public)
         self.assertTrue(':value' in self.form.content)
-        self.assertEqual(self.form.content.count(':value'), 3)
+        self.assertEqual(self.form.content.count(':value'), 5)
         self.assertTrue(':checked' in self.form.content)
-        self.assertEqual(self.form.content.count(':checked'), 3)
+        self.assertEqual(self.form.content.count(':checked'), 1)
+        self.assertTrue('v-model' in self.form.content)
+        self.assertEqual(self.form.content.count('v-model'), 2)
 
     def test_update(self):
         self.form.public = True

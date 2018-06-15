@@ -27,17 +27,38 @@ class Form(models.Model):
 
     def save(self, *args, **kwargs):
         from bs4 import BeautifulSoup
+        # Make sure inputs, textareas, and selects have bound Vue attributes.
         soup = BeautifulSoup(self.content, 'html.parser')
 
-        for input in soup.find_all('input'):
-            if input['type'] == 'text' and not ':value' in input:
-                input[':value'] = 'this.input.' + input['name']
-            if (input['type'] == 'checkbox' or input['type'] == 'radio') and not ':checked' in input:
-                input[':checked'] = 'this.input.' + input['name']
+        # for input in soup.find_all('input'):
+        #     input_types = ['text', 'tel', 'number', 'email', 'url']
+        #     # if input['type'] in input_types and not 'v-model' in input:
+        #         input['v-model'] = 'this.input.' + input['name']
+        #     if input['type'] in input_types and not '@blur' in input:
+        #         input['@blur'] = 'saveInput'
                 
-        for textarea in soup.find_all('textarea'):
-            if not ':value' in textarea:
-                textarea[':value'] = 'this.input.' + textarea['name']
+        #     if input['type'] == 'checkbox' and not ':checked' in input:
+        #         input[':checked'] = 'this.input.' + input['name']
+        #     if input['type'] == 'checkbox' and not '@blur' in input:
+        #         input['@blur'] = 'saveInput'
                 
+        #     if input['type'] == 'radio' and not 'v-model' in input:
+        #         input['v-model'] = 'this.input.' + input['name']
+        #     if input['type'] == 'radio' and not '@blur' in input:
+        #         input['@blur'] = 'saveInput'
+
+        # for textarea in soup.find_all('textarea'):
+        #     if not ':value' in textarea:
+        #         textarea[':value'] = 'this.input.' + textarea['name']
+        #     if not '@blur' in textarea:
+        #         textarea['@blur'] = 'saveInput'
+
+        # for select in soup.find_all('select'):
+        #     if not ':value' in select:
+        #         select[':value'] = 'this.input.' + select['name']
+        #     if not '@blur' in select:
+        #         select['@blur'] = 'saveInput'
+
+
         self.content = soup.prettify()
         super(Form, self).save(*args, **kwargs)
