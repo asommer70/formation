@@ -26,18 +26,12 @@ class Form(models.Model):
         return reverse('forms:detail', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
-        from pyquery import PyQuery as pq
-        if not self.pk:
-            content = pq(self.content)
-            # content.wrap('')
-            inputs = content('input')
-            print('inputs:', inputs)
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(self.content, 'html.parser')
 
-            for input in inputs:
-                input = pq(input)
-                if not input.attr(':value'):
-                    print(':value:', input.attr(':value'))
-                    print('this.input name:', ':value="this.input.' + input.attr('name') + '"')
-                    input.attr('title', 'this.input.' + input.attr('name'))
-            self.content = content
+        for input in soup.find_all('input'):
+            if not ':value' in input:
+                input[':value'] = 'this.input.' + input['name']
+
+        self.content = soup.prettify()
         super(Form, self).save(*args, **kwargs)
