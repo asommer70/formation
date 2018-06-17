@@ -32,23 +32,13 @@ class Form(models.Model):
         soup = BeautifulSoup(self.content, 'html.parser')
 
         fields = {}
+        # Add a v-model and @blur attribute to all inputs, textareas, and selects.
         for input in soup.find_all('input'):
             fields[input['name']] = ""
-            # input_types = ['text', 'tel', 'number', 'email', 'url']
             if not 'v-model' in input:
                 input['v-model'] = input['name']
             if not '@blur' in input:
                 input['@blur'] = 'saveInput'
-
-        #     if input['type'] == 'checkbox' and not ':checked' in input:
-        #         input[':checked'] = 'this.input.' + input['name']
-        #     if input['type'] == 'checkbox' and not '@blur' in input:
-        #         input['@blur'] = 'saveInput'
-
-        #     if input['type'] == 'radio' and not 'v-model' in input:
-        #         input['v-model'] = 'this.input.' + input['name']
-        #     if input['type'] == 'radio' and not '@blur' in input:
-        #         input['@blur'] = 'saveInput'
 
         for textarea in soup.find_all('textarea'):
             fields[textarea['name']] = ""
