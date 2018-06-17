@@ -62,6 +62,12 @@
 	 self[k] = v;
        });
      }
+
+     // Set the scroll height of all textarea elements to match their contents.
+     $.each($('textarea'), function(idx, el) {
+       var $el = $(el);
+       $el.height($el.prop('scrollHeight'));
+     });
    }
  });
 </script>
