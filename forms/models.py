@@ -29,31 +29,32 @@ class Form(models.Model):
     def save(self, *args, **kwargs):
         from bs4 import BeautifulSoup
         # Make sure inputs, textareas, and selects have bound Vue attributes.
-        soup = BeautifulSoup(self.content, 'html.parser')
+        if self.content:
+          soup = BeautifulSoup(self.content, 'html.parser')
 
-        fields = {}
-        # Add a v-model and @blur attribute to all inputs, textareas, and selects.
-        for input in soup.find_all('input'):
-            fields[input['name']] = ""
-            if not 'v-model' in input:
-                input['v-model'] = input['name']
-            if not '@blur' in input:
-                input['@blur'] = 'saveInput'
+          fields = {}
+          # Add a v-model and @blur attribute to all inputs, textareas, and selects.
+          for input in soup.find_all('input'):
+              fields[input['name']] = ""
+              if not 'v-model' in input:
+                  input['v-model'] = input['name']
+              if not '@blur' in input:
+                  input['@blur'] = 'saveInput'
 
-        for textarea in soup.find_all('textarea'):
-            fields[textarea['name']] = ""
-            if not 'v-model' in textarea:
-                textarea['v-model'] = textarea['name']
-            if not '@blur' in textarea:
-                textarea['@blur'] = 'saveInput'
+          for textarea in soup.find_all('textarea'):
+              fields[textarea['name']] = ""
+              if not 'v-model' in textarea:
+                  textarea['v-model'] = textarea['name']
+              if not '@blur' in textarea:
+                  textarea['@blur'] = 'saveInput'
 
-        for select in soup.find_all('select'):
-            fields[select['name']] = ""
-            if not 'v-model' in select:
-                select['v-model'] = select['name']
-            if not '@blur' in select:
-                select['@blur'] = 'saveInput'
+          for select in soup.find_all('select'):
+              fields[select['name']] = ""
+              if not 'v-model' in select:
+                  select['v-model'] = select['name']
+              if not '@blur' in select:
+                  select['@blur'] = 'saveInput'
 
-        self.fields = fields
-        self.content = soup.prettify()
+          self.fields = fields
+          self.content = soup.prettify()
         super(Form, self).save(*args, **kwargs)
