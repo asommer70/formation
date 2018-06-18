@@ -9,12 +9,18 @@ from django.views.generic import (
     DeleteView
 )
 from .models import Route
+from forms.models import Form
 
 
 class RouteListView(LoginRequiredMixin, ListView):
     context_object_name = 'routes'
     model = Route
     paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['forms'] = Form.objects.all()
+        return context
 
 
 class RouteDetailView(LoginRequiredMixin, DetailView):

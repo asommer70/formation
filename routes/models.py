@@ -11,11 +11,9 @@ User = get_user_model()
 class Route(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     form = models.ForeignKey(Form, on_delete=models.CASCADE, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, default=None)
-    # Items = models.ManyToManyField(Item, through='ItemSupplyRequest')
 
     class Meta:
         ordering = ['-created_at']

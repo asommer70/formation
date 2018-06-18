@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}{% if route.instance %}Edit Route{% else %}New Route{% endif %}{% endblock %}
+
+{% block body %}
+  
+  <h1>{% if not route.instance.pk %}Create Route{% else %}Edit Route{% endif %}</h1>
+  <br />
+  
+  <div class="row">
+    <div class="column small-12 large-6">
+      <form method="post">
+	{{ route.as_p }}
+	{% csrf_token %}
+
+
+	<input class="button" type="submit" value="Save" />
+	{% if route.instance.pk %}
+	  <a href="{% url 'routes:detail' pk=route.instance.pk %}" class="button secondary">Cancel</a>
+	  <a href="{% url 'routes:delete' pk=route.instance.pk %}" class="button tiny alert float-right">Delete</a>
+	{% endif %}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

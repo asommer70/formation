@@ -7,10 +7,22 @@
   <h1>Route List</h1>
 
   <h2>Forms</h2>
-  
-  <ul>
+
+  <ul class="accordion" data-accordion>
     {% for form in forms %}
-      <li><a href="{% url 'forms:detail' pk=form.pk %}">{{form.name}}</a></li>
+      <li class="accordion-item" data-accordion-item>
+	<a href="#" class="accordion-title">{{form.name}}</a>
+
+	<div class="accordion-content" data-tab-content>
+	  <ul>
+	    {% for route in form.route_set.all %}
+	      <li>Route...</li>
+	     {% endfor %}
+	  </ul>
+
+	  <a href="{% url 'routes:create' %}" class="button small">Add Route</a>
+	</div>
+      </li>
     {% endfor %}
   </ul>
 

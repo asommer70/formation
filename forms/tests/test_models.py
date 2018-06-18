@@ -42,10 +42,6 @@ class FormTestCase(TestCase):
     def test_create(self):
         self.assertEqual(self.form.name, 'Test Form')
         self.assertFalse(self.form.public)
-        # self.assertTrue(':value' in self.form.content)
-        # self.assertEqual(self.form.content.count(':value'), 5)
-        # self.assertTrue(':checked' in self.form.content)
-        # self.assertEqual(self.form.content.count(':checked'), 1)
         self.assertTrue('v-model' in self.form.content)
         self.assertEqual(self.form.content.count('v-model'), 2)
 
