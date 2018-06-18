@@ -1,13 +1,13 @@
 {% extends 'layout.html' %}
 
-{% block title %}Forms{% endblock %}
+{% block title %}Routes{% endblock %}
 
 {% block body %}
 
-  <h1>Forms</h1>
+  <h1>Route List</h1>
 
-  <a href="{% url 'forms:create' %}" class="button small">New Form</a>
-
+  <h2>Forms</h2>
+  
   <ul>
     {% for form in forms %}
       <li><a href="{% url 'forms:detail' pk=form.pk %}">{{form.name}}</a></li>
