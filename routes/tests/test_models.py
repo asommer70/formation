@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.contrib.auth.models import Group
 from forms.models import Form
-from routes.models import Route
+from routes.models import Route, Destination
 
 
 User = get_user_model()
@@ -15,6 +15,13 @@ class RouteTestCase(TestCase):
             password='testers',
             email='test@thehoick.com'
         )
+
+        self.other = User.objects.create(
+            username='other',
+            password='others',
+            email='other@thehoick.com'
+        )
+                
         self.group = Group.objects.create(name="IT Dept")
         self.user.groups.add(self.group)
 
@@ -27,6 +34,11 @@ class RouteTestCase(TestCase):
             form=self.form,
             user=self.user,
             group=self.group
+        )
+
+        self.destination = Destination.objects.create(
+            route=self.route,
+            user=self.user
         )
 
     def test_create(self):
@@ -47,3 +59,24 @@ class RouteTestCase(TestCase):
         self.route.delete()
         self.assertEqual(Route.objects.all().count(), 0)
 
+    def test_create_destination(self):
+        self.assertEqual(self.destination.user.username, 'test')
+        self.assertEqual(self.destination.route.group.name, 'IT Dept')
+        self.assertEqual(self.destination.route.form.name, 'Test Form')
+        self.assertEqual(
+            self.form.route_set.first().destination_set.first().user.username,
+            'test'
+        )
+
+    def test_update_destination(self):
+        self.destination.user = self.other
+        self.destination.save()
+
+        dest = Destination.objects.get(pk=self.destination.pk)
+
+        self.assertEqual(dest.user.username, 'other')
+
+    def test_delete_destination(self):
+        self.assertEqual(Destination.objects.all().count(), 1)
+        self.destination.delete()
+        self.assertEqual(Destination.objects.all().count(), 0)
