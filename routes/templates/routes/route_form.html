@@ -7,20 +7,84 @@
   <h1>{% if not route.instance.pk %}Create Route{% else %}Edit Route{% endif %}</h1>
   <br />
   
-  <div class="row">
-    <div class="column small-12 large-6">
-      <form method="post">
+      <form method="post" id="route-form">
 	{{ route.as_p }}
 	{% csrf_token %}
 
+	<div class="grid-container">
+	  <div class="card route-dest-card">
+	    <div class="card-divider">
+	      Start
+	    </div>
+	    <div class="card-section">
+	      <label for="user">User</label>
+	      <select id="user" name="user">
+		<option value=""></option>
+		{% for user in users %}
+		  <option value="{{user.id}}">{{user.username}}</option>
+		{% endfor %}
+	      </select>
 
-	<input class="button" type="submit" value="Save" />
-	{% if route.instance.pk %}
-	  <a href="{% url 'routes:detail' pk=route.instance.pk %}" class="button secondary">Cancel</a>
-	  <a href="{% url 'routes:delete' pk=route.instance.pk %}" class="button tiny alert float-right">Delete</a>
-	{% endif %}
+	      <label for="group">Group</label>
+	      <select id="group" name="group">
+		<option value=""></option>
+		{% for group in groups %}
+		  <option value="{{group.id}}">{{group.name}}</option>
+		{% endfor %}
+	      </select>
+	    </div>
+	  </div>
+
+	  <div class="card route-dest-card">
+	    <div class="card-divider">
+	      Destination 1
+	    </div>
+	    <div class="card-section">
+	      <label for="user">User</label>
+	      <select id="user" name="user">
+		<option value=""></option>
+		{% for user in users %}
+		  <option value="{{user.id}}">{{user.username}}</option>
+		{% endfor %}
+	      </select>
+
+	      <label for="group">Group</label>
+	      <select id="group" name="group">
+		<option value=""></option>
+		{% for group in groups %}
+		  <option value="{{group.id}}">{{group.name}}</option>
+		{% endfor %}
+	      </select>
+	    </div>
+	  </div>
+
+	  <div class="card route-dest-card">
+	    <div class="card-divider">
+	      Archive
+	    </div>
+	    <div class="card-section">
+	     Final Destination
+	    </div>
+	  </div>
+	</div>
+
+	<div class="row">
+	  <div class="columns large-4">
+	    <button class="button small" type="button">Add Destination</button>
+	  </div>
+	  
+	  <div class="columns large-4">
+	    <input class="button" type="submit" value="Save" />
+	    {% if route.instance.pk %}
+	      <a href="{% url 'routes:detail' pk=route.instance.pk %}" class="button secondary">Cancel</a>
+	      <a href="{% url 'routes:delete' pk=route.instance.pk %}" class="button tiny alert float-right">Delete</a>
+	    {% endif %}
+	  </div>
+	</div>
       </form>
-    </div>
-  </div>
 
+{% endblock %}
+
+{% block vue %}
+  {% include 'route_vue.html' %}
 {% endblock %}

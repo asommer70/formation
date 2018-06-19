@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from rest_framework import serializers
 from inputs.models import Input
 from forms.models import Form
@@ -9,8 +10,14 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('username', 'email')
+        fields = ('id', 'username', 'email')
         model = User
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'name',)
+        model = Group
 
 
 class FormSerializer(serializers.ModelSerializer):

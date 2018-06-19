@@ -8,5 +8,8 @@ urlpatterns = [
     path('forms/<int:pk>', views.RetrieveUpdateDestroyForm.as_view(), name="forms"),
 
     path('inbox/', views.ListCreateInput.as_view(), name="inbox"),
-    path('inbox/<int:pk>', views.RetrieveUpdateDestroyInput.as_view(), name="input")
+    path('inbox/<int:pk>', views.RetrieveUpdateDestroyInput.as_view(), name="input"),
+
+    path('users/', views.ListCreateUser.as_view(), name="users"),
+    path('groups/', views.ListCreateGroup.as_view(), name="groups"),
 ]
