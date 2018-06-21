@@ -1,8 +1,77 @@
 <script type="text/javascript">
  Vue.use(VAutocomplete.default)
 
+ var Destination = Vue.component('destination', {
+   props: ['name', 'userLabels', 'groupLabels', 'users', 'groups', 'groupName', 'userName'],
+   template: `
+     <div class="card route-dest-card">
+       <div class="card-divider">
+	 {{name}}
+       </div>
+       <div class="card-section">
+	 <label for="{{name}}-user">User</label>
+	 <v-autocomplete :input-attrs="{id: '{{name}}-user'}"
+	   :items="userLabels"
+	   v-model="userName"
+	   :get-label="getUsername"
+	   :component-item='getAutoComponent(userName)' />
+
+	   <label for="{{name}}-group">Group</label>
+	   <v-autocomplete :input-attrs="{id: '{{name}}-group'}"
+	     :items="groupLabels"
+	     v-model="groupName"
+	     :get-label="getGroupName"
+	     :component-item='getAutoComponent(groupName)' />
+       </div>
+     </div>
+   `,
+
+   methods: {
+     getAutoComponent: function(item) {
+       // Needed for v-autocomplete.
+       console.log('getAutoComponent item:', item);
+     },
+     
+     getUsername: function(username, label) {
+       console.log('getUsername username:', username, 'label:', label);
+       this.username = username;
+
+       if (this.users[username]) {
+	 return this.users[username].username;
+       } else {
+	 return '';
+       }
+     },
+
+     getGroupName: function(groupname) {
+       this.groupname = groupname;
+       
+       if (this.groups[groupname]) {
+	 return this.groups[groupname].name;
+       } else {
+	 return '';
+       }
+     }
+   }
+ });
+
  var app = new Vue({
-   el: '#route-form',     
+   el: '#route-form',
+   created: function() {
+     console.log('app created()... this.users:', this.users);
+     // $('#archiveDest').prepend();
+     // Start Destination...
+     var dest = new Destination({props: {name: 'startDest', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups}});
+     console.log('dest:', dest);
+       $('#dests').append(dest);
+       /* $('#archiveDest').prepend(`<destination 
+	*   name="Start"
+	*   user-labels="${this.userLabels}"
+	*   group-labels="${this.groupLabels}"
+	*   users="${this.users}" 
+	*   groups="${this.groups}" />`); */
+   },
+   
    data: {
      startUsername: '',
      dest1Username: '',
@@ -43,31 +112,11 @@
      }
    },
 
+   components: { Destination },
+
    methods: {
-     getAutoComponent: function(item) {
-       // Needed for v-autocomplete.
-       console.log('getAutoComponent item:', item);
-     },
-     
-     getUsername: function(username, label) {
-       console.log('getUsername username:', username, 'label:', label);
-       this.username = username;
-
-       if (this.users[username]) {
-	 return this.users[username].username;
-       } else {
-	 return '';
-       }
-     },
-
-     getGroupName: function(groupname) {
-       this.groupname = groupname;
+     addDest: function() {
        
-       if (this.groups[groupname]) {
-	 return this.groups[groupname].name;
-       } else {
-	 return '';
-       }
      }
    }
  });

@@ -4,6 +4,7 @@
 venv/
 .env
 *~
+\#*
 
 node_modules
 media/
