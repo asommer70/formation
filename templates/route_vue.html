@@ -2,22 +2,23 @@
  Vue.use(VAutocomplete.default)
 
  var Destination = Vue.component('destination', {
+   delimiters: ["<%","%>"],
    props: ['name', 'userLabels', 'groupLabels', 'users', 'groups', 'groupName', 'userName'],
    template: `
      <div class="card route-dest-card">
        <div class="card-divider">
-	 {{name}}
+	 <% name %>
        </div>
        <div class="card-section">
-	 <label for="{{name}}-user">User</label>
-	 <v-autocomplete :input-attrs="{id: '{{name}}-user'}"
+	 <label for="<% name %>-user">User</label>
+	 <v-autocomplete :input-attrs="{id: '<% name %>-user'}"
 	   :items="userLabels"
 	   v-model="userName"
 	   :get-label="getUsername"
 	   :component-item='getAutoComponent(userName)' />
 
-	   <label for="{{name}}-group">Group</label>
-	   <v-autocomplete :input-attrs="{id: '{{name}}-group'}"
+	   <label for="<% name %>-group">Group</label>
+	   <v-autocomplete :input-attrs="{id: '<% name %>-group'}"
 	     :items="groupLabels"
 	     v-model="groupName"
 	     :get-label="getGroupName"
@@ -57,19 +58,20 @@
 
  var app = new Vue({
    el: '#route-form',
+   delimiters: ["<%","%>"],
    created: function() {
      console.log('app created()... this.users:', this.users);
      // $('#archiveDest').prepend();
      // Start Destination...
-     var dest = new Destination({props: {name: 'startDest', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups}});
-     console.log('dest:', dest);
-       $('#dests').append(dest);
-       /* $('#archiveDest').prepend(`<destination 
-	*   name="Start"
-	*   user-labels="${this.userLabels}"
-	*   group-labels="${this.groupLabels}"
-	*   users="${this.users}" 
-	*   groups="${this.groups}" />`); */
+     /* var dest = new Destination({props: {name: 'startDest', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups}});
+      * console.log('dest:', dest);
+      *   $('#dests').append(dest); */
+     $('#dests').prepend(`<destination 
+       name="Start"
+       :user-labels="this.userLabels"
+       :group-labels="this.groupLabels"
+       :users="this.users"
+       :groups="this.groups" />`);
    },
    
    data: {
