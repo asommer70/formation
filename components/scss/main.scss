@@ -13,3 +13,23 @@
     float: left;
     margin-left: 1em;
 }
+
+.card-section {
+    overflow: visible;
+}
+
+.v-autocomplete .v-autocomplete-list {
+    position: relative;
+}
+ 
+.v-autocomplete-list {
+    background-color: white;
+    width: 180px;
+    border: 1px solid map-get($foundation-palette, secondary);
+}
+
+.v-autocomplete-list-item {
+    margin-left: 5px;
+    overflow: visible;
+    z-index: 99;
+}

@@ -17,21 +17,19 @@
 	      Start
 	    </div>
 	    <div class="card-section">
-	      <label for="user">User</label>
-	      <select id="user" name="user">
-		<option value=""></option>
-		{% for user in users %}
-		  <option value="{{user.id}}">{{user.username}}</option>
-		{% endfor %}
-	      </select>
+	      <label for="startUser">User</label>
+	      <v-autocomplete :input-attrs="{id: 'startUser'}"
+			      :items="userLabels"
+			      v-model="startUsername"
+			      :get-label="getUsername"
+			      :component-item='getAutoComponent(startUsername)' />
 
-	      <label for="group">Group</label>
-	      <select id="group" name="group">
-		<option value=""></option>
-		{% for group in groups %}
-		  <option value="{{group.id}}">{{group.name}}</option>
-		{% endfor %}
-	      </select>
+	      <label for="startGroup">Group</label>
+	      <v-autocomplete :input-attrs="{id: 'startGroup'}"
+			      :items="groupLabels"
+			      v-model="startGroupName"
+			      :get-label="getGroupName"
+			      :component-item='getAutoComponent(startGroupName)' />
 	    </div>
 	  </div>
 
@@ -40,21 +38,19 @@
 	      Destination 1
 	    </div>
 	    <div class="card-section">
-	      <label for="user">User</label>
-	      <select id="user" name="user">
-		<option value=""></option>
-		{% for user in users %}
-		  <option value="{{user.id}}">{{user.username}}</option>
-		{% endfor %}
-	      </select>
+	      <label for="dest1User">User</label>
+	      <v-autocomplete :input-attrs="{id: 'dest1User'}"
+			      :items="userLabels"
+			      v-model="dest1Username"
+			      :get-label="getUsername"
+			      :component-item='getAutoComponent(dest1Username)' />
 
-	      <label for="group">Group</label>
-	      <select id="group" name="group">
-		<option value=""></option>
-		{% for group in groups %}
-		  <option value="{{group.id}}">{{group.name}}</option>
-		{% endfor %}
-	      </select>
+	      <label for="dest1Group">Group</label>
+	      <v-autocomplete :input-attrs="{id: 'dest1Group'}"
+			      :items="groupLabels"
+			      v-model="dest1GroupName"
+			      :get-label="getGroupName"
+			      :component-item='getAutoComponent(dest1GroupName)' />
 	    </div>
 	  </div>
 

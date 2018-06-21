@@ -57,3 +57,8 @@ fs.createReadStream('node_modules/vue/dist/vue.js')
 fs.createReadStream('node_modules/vue/dist/vue.min.js')
   .pipe(fs.createWriteStream(assets + 'vue.min.js'));
 
+fs.createReadStream('node_modules/vue-instant/dist/vue-instant.browser.js')
+  .pipe(fs.createWriteStream(assets + 'vue-instant.browser.js'));
+
+fs.createReadStream('node_modules/vue-instant/dist/vue-instant.css')
+  .pipe(fs.createWriteStream(cssAssets + 'vue-instant.css'));
