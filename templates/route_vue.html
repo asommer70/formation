@@ -1,125 +1,170 @@
 <script type="text/javascript">
  Vue.use(VAutocomplete.default)
 
- var Destination = Vue.component('destination', {
-   delimiters: ["<%","%>"],
-   props: ['name', 'userLabels', 'groupLabels', 'users', 'groups', 'groupName', 'userName'],
-   template: `
-     <div class="card route-dest-card">
-       <div class="card-divider">
-	 <% name %>
-       </div>
-       <div class="card-section">
-	 <label for="<% name %>-user">User</label>
-	 <v-autocomplete :input-attrs="{id: '<% name %>-user'}"
-	   :items="userLabels"
-	   v-model="userName"
-	   :get-label="getUsername"
-	   :component-item='getAutoComponent(userName)' />
+ Vue.component('destination', function(resolve) {
+   resolve({
+       delimiters: ["<%","%>"],
+       data: function() {
+	 return {
+	   userName: '',
+	   groupName: ''
+	 }
+       },
+       props: ['name', 'userLabels', 'groupLabels', 'users', 'groups', 'isRemoveable'],
+       template: `
+	 <div class="card route-dest-card">
+	   <div v-bind:class="[isRemoveable ? 'card-section' : 'card-divider']">
+	     <span class="float-left"><% name %></span>
+	     <button type="button" v-if="isRemoveable" class="button tiny secondary float-right">&times;</button>
+	     <hr v-if="isRemoveable" />
+	   </div>
+	   <div class="card-section">
+	     <label>User</label>
+	     <v-autocomplete 
+	       :items="userLabels"
+	       v-model="userName"
+	       :get-label="getUsername"
+	       :component-item='getAutoComponent(userName)' />
 
-	   <label for="<% name %>-group">Group</label>
-	   <v-autocomplete :input-attrs="{id: '<% name %>-group'}"
-	     :items="groupLabels"
-	     v-model="groupName"
-	     :get-label="getGroupName"
-	     :component-item='getAutoComponent(groupName)' />
-       </div>
-     </div>
-   `,
+	       <label>Group</label>
+	       <v-autocomplete
+		 :items="groupLabels"
+		 v-model="groupName"
+		 :get-label="getGroupName"
+		 :component-item='getAutoComponent(groupName)' />
+	   </div>
+	 </div>
+       `,
 
-   methods: {
-     getAutoComponent: function(item) {
-       // Needed for v-autocomplete.
-       console.log('getAutoComponent item:', item);
+       methods: {
+	 getAutoComponent: function(item) {
+	   // Needed for v-autocomplete.
+	 },
+	 
+	 getUsername: function(username, label) {
+	   this.userName = username;
+
+	   if (this.users[username]) {
+	     return this.users[username].username;
+	   } else {
+	     return '';
+	   }
+	 },
+
+	 getGroupName: function(groupname) {
+	   this.groupName = groupname;
+	   
+	   if (this.groups[groupname]) {
+	     return this.groups[groupname].name;
+	   } else {
+	     return '';
+	   }
+	 }
+       }
+     });
+   });
+   
+   var app = new Vue({
+     el: '#route-form',
+     delimiters: ["<%","%>"],
+     created: function() {
+       // Add the start and first destination...
+       /* $('#dests').append(`<destination 
+	*   name="Start"
+	*   :user-labels="this.userLabels"
+	*   :group-labels="this.groupLabels"
+	*   :users="this.users"
+	*   :groups="this.groups"
+	*   :is-removeable="false" />`);
+
+	* $('#dests').append(`<destination 
+	*   name="Destination 1"
+	*   :user-labels="this.userLabels"
+	*   :group-labels="this.groupLabels"
+	*   :users="this.users"
+	*   :groups="this.groups" 
+	*   :is-removeable="false" />`); */
      },
      
-     getUsername: function(username, label) {
-       console.log('getUsername username:', username, 'label:', label);
-       this.username = username;
-
-       if (this.users[username]) {
-	 return this.users[username].username;
-       } else {
-	 return '';
-       }
-     },
-
-     getGroupName: function(groupname) {
-       this.groupname = groupname;
-       
-       if (this.groups[groupname]) {
-	 return this.groups[groupname].name;
-       } else {
-	 return '';
-       }
-     }
-   }
- });
-
- var app = new Vue({
-   el: '#route-form',
-   delimiters: ["<%","%>"],
-   created: function() {
-     console.log('app created()... this.users:', this.users);
-     // $('#archiveDest').prepend();
-     // Start Destination...
-     /* var dest = new Destination({props: {name: 'startDest', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups}});
-      * console.log('dest:', dest);
-      *   $('#dests').append(dest); */
-     $('#dests').prepend(`<destination 
-       name="Start"
+     data: {
+       destCount: 1,
+       dests: [
+	 `<destination 
+       name="Start"               
+       user-labels="this.userLabels"
+       :group-labels="this.groupLabels"
+       :users="this.users"
+       :groups="this.groups"
+       :is-removeable="false"></destination>`,
+	 
+	 `<destination 
+       name="Destination 1"
        :user-labels="this.userLabels"
        :group-labels="this.groupLabels"
        :users="this.users"
-       :groups="this.groups" />`);
-   },
-   
-   data: {
-     startUsername: '',
-     dest1Username: '',
-     startGroupName: '',
-     dest1GroupName: '',
-     userLabels: [
-       {% for user in users %}
-       '{{user.username}}',
-       {% endfor %}
-     ],
-     groupLabels: [
-       {% for group in groups %}
-       '{{group.name}}',
-       {% endfor %}
-     ],
-     users: {
-       {% for user in users %}
-       {{user.username}}: {
-	 id: {{user.id}},
-	 username: '{{user.username}}',
-	 email: '{{user.email}}'
+       :groups="this.groups" 
+       :is-removeable="false"></destination>`
+       ],
+       userLabels: [
+	 {% for user in users %}
+	 '{{user.username}}',
+	 {% endfor %}
+       ],
+       groupLabels: [
+	 {% for group in groups %}
+	 '{{group.name}}',
+	 {% endfor %}
+       ],
+       users: {
+	 {% for user in users %}
+	 {{user.username}}: {
+	   id: {{user.id}},
+	   username: '{{user.username}}',
+	   email: '{{user.email}}'
+	 },
+	 {% endfor %}
        },
-       {% endfor %}
+       groups: {
+	 {% for group in groups %}
+	 {{group.name}}: {
+	   id: {{group.id}},
+	   name: '{{group.name}}'
+	 },
+	 {% endfor %}
+       }
      },
-     groups: {
-       {% for group in groups %}
-       {{group.name}}: {
-	 id: {{group.id}},
-	 name: '{{group.name}}'
-       },
-       {% endfor %}
-     }
-   },
-   
-   computed: {
-     pathParts: function() {
-       return window.location.pathname.split('/');
-     }
-   },
+     
+     computed: {
+       pathParts: function() {
+	 return window.location.pathname.split('/');
+       }
+     },
 
-   components: { Destination },
+     methods: {
+       addDest: function(event) {
+	 console.log('adding destination... #', this.destCount + 1);
+	 console.log('addDest event:', event);
+	 this.destCount = this.destCount + 1;
 
-   methods: {
-     addDest: function() {
-       
-     }
-   }
- });
+	 /* $('#dests').append(`<destination 
+	  *   name="Destination ${this.destCount}"
+	  *   :user-labels="this.userLabels"
+	  *   :group-labels="this.groupLabels"
+	  *   :users="this.users"
+	  *   :groups="this.groups" 
+	  *   :is-removeable="true"></destination>`
+	  * ); */
+
+	 this.dests.push(`<destination 
+         name="Destination ${this.destCount}"
+         :user-labels="this.userLabels"
+         :group-labels="this.groupLabels"
+         :users="this.users"
+         :groups="this.groups" 
+         :is-removeable="true"></destination>`);
+       }
+     },
+
+     components: { name: 'destination' },
+   });
 </script>
