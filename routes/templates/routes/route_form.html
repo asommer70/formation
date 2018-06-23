@@ -13,8 +13,8 @@
 
 	<div class="grid-container">
 
-	  <destination v-for="(dest, idx) in dests"
-		       :key="idx"
+	  <destination v-for="dest in dests"
+		       :key="dest.name"
 		       :name="dest.name"
 		       :user-labels="dest.userLabels"
 		       :group-labels="dest.groupLabels"

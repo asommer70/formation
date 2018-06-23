@@ -69,21 +69,6 @@
    delimiters: ["<%","%>"],
    created: function() {
      // Add the start and first destination...
-     /* $('#dests').append(`<destination 
-      *   name="Start"
-      *   :user-labels="this.userLabels"
-      *   :group-labels="this.groupLabels"
-      *   :users="this.users"
-      *   :groups="this.groups"
-      *   :is-removeable="false" />`);
-
-      * $('#dests').append(`<destination 
-      *   name="Destination 1"
-      *   :user-labels="this.userLabels"
-      *   :group-labels="this.groupLabels"
-      *   :users="this.users"
-      *   :groups="this.groups" 
-      *   :is-removeable="false" />`); */
    },
    
    data: {
@@ -122,60 +107,37 @@
        return window.location.pathname.split('/');
      },
 
-     dests: function() {
-       return [
-         {name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-         {name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-
-	 /* `<destination 
-	  * name="Start"               
-	  * user-labels="this.userLabels"
-	  * :group-labels="this.groupLabels"
-	  * :users="this.users"
-	  * :groups="this.groups"
-	  * :is-removeable="false"></destination>`,
-	  * 
-	  * `<destination 
-	  * name="Destination 1"
-	  * :user-labels="this.userLabels"
-	  * :group-labels="this.groupLabels"
-	  * :users="this.users"
-	  * :groups="this.groups" 
-	  * :is-removeable="false"></destination>` */
-       ];
+     dests: {
+       get: function() {
+	 return [
+	   {name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	   {name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	 ];
+       },
+       
+       set: function(dest) {
+	 this.dests.push(dest);
+       }
      },
    },
 
    methods: {
      addDest: function(event) {
-       console.log('adding destination... #', this.destCount + 1);
-       console.log('addDest event:', event);
        this.destCount = this.destCount + 1;
 
-       /* $('#dests').append(`<destination 
-	*   name="Destination ${this.destCount}"
-	*   :user-labels="this.userLabels"
-	*   :group-labels="this.groupLabels"
-	*   :users="this.users"
-	*   :groups="this.groups" 
-	*   :is-removeable="true"></destination>`
-	* ); */
-       /* 
-	* 	 this.dests.push(`<destination 
-	*          name="Destination ${this.destCount}"
-	*          :user-labels="this.userLabels"
-	*          :group-labels="this.groupLabels"
-	*          :users="this.users"
-	*          :groups="this.groups" 
-	*          :is-removeable="true"></destination>`); */
-       this.dests.push({
-	 name: 'Destination ' + this.destCount, 
-	 userLabels: this.userLabels, 
-	 groupLabels: this.groupLabels, 
-	 users: this.users, 
-	 groups: this.groups, 
+       this.dests = {
+	 name: 'Destination ' + this.destCount,
+	 userLabels: this.userLabels,
+	 groupLabels: this.groupLabels,
+	 users: this.users,
+	 groups: this.groups,
 	 isRemoveable: true
-       });
+       };
+
+       // TODO:as send Ajax request to create a new Destination object.
+
+       // Need to force a rerender I guess due to dests being a computed property...
+       this.$forceUpdate();
      }
    },
 
