@@ -13,6 +13,15 @@
 
 	<div class="grid-container">
 
+	  <label>User</label>
+	  <autocomplete name="user" :items="users" label="username"></autocomplete>
+	  <br /><br />
+	  <v-autocomplete 
+	    :input-attrs="{id: 'start'}"
+	    :items="userLabels"
+	    v-model="userName"
+	    :get-label="getUsername"></v-autocomplete>
+
 	  <destination v-for="dest in dests"
 		       :key="dest.name"
 		       :name="dest.name"

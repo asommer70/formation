@@ -1,6 +1,72 @@
 <script type="text/javascript">
  Vue.use(VAutocomplete.default)
 
+ Vue.component('autocomplete', {
+   delimiters: ["<%","%>"],
+   props: ['name', 'items', 'label'],
+   data: function() {
+     return {
+       item: '',
+     }
+   },
+
+   computed: {
+     dropdownId: function() {
+       return 'dd_' + Math.floor((Math.random() * 1000) + 1);
+     },
+
+     filteredItems: {
+       get: function() {
+	 return this.filterItems();
+       },
+
+       set: function(items) {
+	 return items;
+       }
+     }
+   },
+   
+   template: `
+     <div>
+       <input type="text" v-model="item" :name="name" @keydown="filterItems" :data-toggle="dropdownId" />
+       <div class="dropdown-pane" :id="dropdownId" data-dropdown>
+	 <ul class="no-bullet">
+	   <li v-for="item in filteredItems" @click="setItem(item)">
+	     <% item.username %>
+	   </li>
+	 </ul>
+       </div>
+     </div>
+   `,
+
+   methods: {
+     filterItems: function(event) {
+       if (event) {
+	 console.log('filterItems event.target.value:', $(event.target.value));
+	 var self = this;
+	 
+	 var regexp = new RegExp(event.target.value, 'ig');
+	 var filtered = self.items.filter(function(val) {
+	   return regexp.test(val[self.label]);
+	 });
+
+	 console.log('filtered;', filtered);
+	 this.filteredItems = filtered;
+	 this.$forceUpdate();
+       }
+
+       this.filteredItems = this.items;
+       this.$forceUpdate();
+     },
+
+     setItem: function(item) {
+       console.log('setItem:', item);
+       this.item = item[this.label];
+       $('#' + this.dropdownId).foundation('close');
+     }
+   }
+ });
+
  Vue.component('destination', function(resolve) {
    resolve({
      delimiters: ["<%","%>"],
@@ -21,34 +87,40 @@
 	 <div class="card-section">
 	   <label>User</label>
 	   <v-autocomplete 
+	     :input-attrs="{id: 'start'}"
 	     :items="userLabels"
 	     v-model="userName"
 	     :get-label="getUsername"
-	     :component-item='getAutoComponent(userName)' />
+	     ></v-autocomplete>
 
-	     <label>Group</label>
-	     <v-autocomplete
-	       :items="groupLabels"
-	       v-model="groupName"
-	       :get-label="getGroupName"
-	       :component-item='getAutoComponent(groupName)' />
 	 </div>
        </div>
-     `,
+     `
+     
+     /* <label>Group</label>
+      * <v-autocomplete
+	:items="groupLabels"
+      * v-model="groupName"
+	:get-label="getGroupName"
+	:component-item='getAutoComponent(groupName)' /> */
+     ,
 
      methods: {
-       getAutoComponent: function(item) {
+       getAutoComponent: function(input) {
 	 // Needed for v-autocomplete.
+	 console.log('getAutoComponent input:', input);
        },
        
-       getUsername: function(username, label) {
-	 this.userName = username;
+       getUsername: function(username) {
+	 console.log('getUsername username:', username);
+	 return usernamess.username;
+	 // this.userName = username;
 
-	 if (this.users[username]) {
-	   return this.users[username].username;
-	 } else {
-	   return '';
-	 }
+	 /* if (this.users[username]) {
+	    return this.users[username].username;
+	    } else {
+	    return '';
+	    } */
        },
 
        getGroupName: function(groupname) {
@@ -72,6 +144,8 @@
    },
    
    data: {
+     userName: '',
+     groupName: '',
      destCount: 1,
      userLabels: [
        {% for user in users %}
@@ -83,15 +157,15 @@
        '{{group.name}}',
        {% endfor %}
      ],
-     users: {
+     users: [
        {% for user in users %}
-       {{user.username}}: {
+       {
 	 id: {{user.id}},
 	 username: '{{user.username}}',
 	 email: '{{user.email}}'
        },
        {% endfor %}
-     },
+     ],
      groups: {
        {% for group in groups %}
        {{group.name}}: {
@@ -110,8 +184,8 @@
      dests: {
        get: function() {
 	 return [
-	   {name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-	   {name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	   //{name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	   //{name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
 	 ];
        },
        
@@ -138,9 +212,35 @@
 
        // Need to force a rerender I guess due to dests being a computed property...
        this.$forceUpdate();
+     },
+
+     getAutoComponent: function(userName) {
+       // Needed for v-autocomplete.
+       console.log('getAutoComponent userName:', userName);
+     },
+     
+     getUsername: function(username, label) {
+       console.log('getUsername username:', username, 'label:', label);
+       this.userName = username;
+
+       if (this.users[username]) {
+	 return this.users[username].username;
+       }
+
+       return '';
+     },
+
+     getGroupname: function(groupname) {
+       this.groupName = groupname;
+       
+       if (this.groups[groupname]) {
+	 return this.groups[groupname].name;
+       } else {
+	 return '';
+       }
      }
    },
 
-   components: { name: 'destination' },
+   components: { name: 'destination', name: 'autocomplete' },
  });
 </script>
