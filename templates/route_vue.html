@@ -1,9 +1,10 @@
+
 <script type="text/javascript">
- Vue.use(VAutocomplete.default)
+ // Vue.use(VAutocomplete.default)
 
  Vue.component('autocomplete', {
    delimiters: ["<%","%>"],
-   props: ['name', 'items', 'label'],
+   props: ['name', 'title', 'items', 'label'],
    data: function() {
      return {
        item: '',
@@ -15,9 +16,21 @@
        return 'dd_' + Math.floor((Math.random() * 1000) + 1);
      },
 
+     inputId: function() {
+       return 'input_' + this.dropdownId;
+     },
+
      filteredItems: {
        get: function() {
-	 return this.filterItems();
+	 var self = this;
+	 if (this.item != '' && typeof(this.item) !== 'object') {
+	   var regexp = new RegExp(this.item, 'ig');
+	   var filtered = self.items.filter(function(val) {
+	     return regexp.test(val[self.label]);
+	   });
+	   return filtered;
+         }
+	 return this.items;
        },
 
        set: function(items) {
@@ -28,11 +41,12 @@
    
    template: `
      <div>
-       <input type="text" v-model="item" :name="name" @keydown="filterItems" :data-toggle="dropdownId" />
+       <label :for="inputId"><% title %></label>
+       <input type="text" v-model="item" :name="name" @keydown="filterItems" :data-toggle="dropdownId" :id="inputId" />
        <div class="dropdown-pane" :id="dropdownId" data-dropdown>
 	 <ul class="no-bullet">
 	   <li v-for="item in filteredItems" @click="setItem(item)">
-	     <% item.username %>
+	     <% item[label] %>
 	   </li>
 	 </ul>
        </div>
@@ -41,26 +55,10 @@
 
    methods: {
      filterItems: function(event) {
-       if (event) {
-	 console.log('filterItems event.target.value:', $(event.target.value));
-	 var self = this;
-	 
-	 var regexp = new RegExp(event.target.value, 'ig');
-	 var filtered = self.items.filter(function(val) {
-	   return regexp.test(val[self.label]);
-	 });
-
-	 console.log('filtered;', filtered);
-	 this.filteredItems = filtered;
-	 this.$forceUpdate();
-       }
-
-       this.filteredItems = this.items;
-       this.$forceUpdate();
+       this.item = event.target.value;
      },
 
      setItem: function(item) {
-       console.log('setItem:', item);
        this.item = item[this.label];
        $('#' + this.dropdownId).foundation('close');
      }
@@ -85,54 +83,38 @@
 	   <hr v-if="isRemoveable" />
 	 </div>
 	 <div class="card-section">
-	   <label>User</label>
-	   <v-autocomplete 
-	     :input-attrs="{id: 'start'}"
-	     :items="userLabels"
-	     v-model="userName"
-	     :get-label="getUsername"
-	     ></v-autocomplete>
-
+	   <autocomplete :name="name" title="User" :items="users" label="username"></autocomplete>
+	   
+	   <autocomplete :name="name" title="Group" :items="groups" label="name"></autocomplete>
 	 </div>
        </div>
      `
-     
-     /* <label>Group</label>
-      * <v-autocomplete
-	:items="groupLabels"
-      * v-model="groupName"
-	:get-label="getGroupName"
-	:component-item='getAutoComponent(groupName)' /> */
      ,
 
      methods: {
-       getAutoComponent: function(input) {
-	 // Needed for v-autocomplete.
-	 console.log('getAutoComponent input:', input);
-       },
-       
-       getUsername: function(username) {
-	 console.log('getUsername username:', username);
-	 return usernamess.username;
-	 // this.userName = username;
+       /* getAutoComponent: function(input) {
+	  // Needed for v-autocomplete.
+	  console.log('getAutoComponent input:', input);
+	* },
+	* 
+	* getUsername: function(username) {
+	  console.log('getUsername username:', username);
+	  return usernamess.username;
+	  // this.userName = username;
+	* },
 
-	 /* if (this.users[username]) {
-	    return this.users[username].username;
-	    } else {
-	    return '';
-	    } */
-       },
+	* getGroupName: function(groupname) {
+	  this.groupName = groupname;
+	  
+	  if (this.groups[groupname]) {
+	  return this.groups[groupname].name;
+	  } else {
+	  return '';
+	  }
+	* } */
+     },
 
-       getGroupName: function(groupname) {
-	 this.groupName = groupname;
-	 
-	 if (this.groups[groupname]) {
-	   return this.groups[groupname].name;
-	 } else {
-	   return '';
-	 }
-       }
-     }
+     components: {name: 'autocomplete'}
    });
  });
  
@@ -166,14 +148,14 @@
        },
        {% endfor %}
      ],
-     groups: {
+     groups: [
        {% for group in groups %}
-       {{group.name}}: {
+       {
 	 id: {{group.id}},
 	 name: '{{group.name}}'
        },
        {% endfor %}
-     },
+     ],
    },
    
    computed: {
@@ -184,7 +166,7 @@
      dests: {
        get: function() {
 	 return [
-	   //{name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	   {name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
 	   //{name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
 	 ];
        },
