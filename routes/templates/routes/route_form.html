@@ -13,7 +13,14 @@
 
 	<div class="grid-container">
 
-	  <destination v-for="dest in dests"></destination>
+	  <destination v-for="(dest, idx) in dests"
+		       :key="idx"
+		       :name="dest.name"
+		       :user-labels="dest.userLabels"
+		       :group-labels="dest.groupLabels"
+		       :users="dest.users"
+		       :groups="dest.groups"
+		       :is-removeable="dest.isRemoveable"></destination>
 	  
 
 	  <div id="archiveDest" class="card route-dest-card">
@@ -21,7 +28,7 @@
 	      Archive
 	    </div>
 	    <div class="card-section">
-	     Final Destination
+	     The Final Countdown... err Destination
 	    </div>
 	  </div>
 	</div>
