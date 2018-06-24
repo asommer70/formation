@@ -23,13 +23,13 @@
      filteredItems: {
        get: function() {
 	 var self = this;
-	 if (this.item != '' && typeof(this.item) !== 'object') {
+	 if (this.item !== '' && typeof(this.item) !== 'object') {
 	   var regexp = new RegExp(this.item, 'ig');
-	   var filtered = self.items.filter(function(val) {
+	   return self.items.filter(function(val) {
 	     return regexp.test(val[self.label]);
 	   });
-	   return filtered;
          }
+	 
 	 return this.items;
        },
 
@@ -67,8 +67,7 @@
 
      setItem: function(item) {
        this.item = item[this.label];
-       $('#' + this.dropdownId).foundation('close');
-
+       
        // Emit event to disable the other option.
        this.$emit('item-chosen', item);
      }
@@ -85,6 +84,16 @@
        }
      },
      props: ['name', 'userLabels', 'groupLabels', 'users', 'groups', 'isRemoveable'],
+
+     mounted: function() {
+       var cards = $('.card.route-dest-card');
+
+       // "reflow" Foundation when a new Destination component is added to the DOM.
+       if (cards.length > 3) {
+	 $(cards[cards.length - 2]).foundation();
+       }
+     },
+
      template: `
        <div class="card route-dest-card">
 	 <div v-bind:class="[isRemoveable ? 'card-section' : 'card-divider']">
@@ -94,6 +103,8 @@
 	 </div>
 	 <div class="card-section">
 	   <autocomplete @item-chosen="setUser" @blur="setUser" :disabled="user" :name="name" title="User" :items="users" label="username"></autocomplete>
+	   
+	   <small>or</small><br/>
 	   
 	   <autocomplete @item-chosen="setGroup" @blur="setGroup" :disabled="group" :name="name" title="Group" :items="groups" label="name"></autocomplete>
 	 </div>
@@ -192,8 +203,6 @@
      addDest: function(event) {
        this.destCount = this.destCount + 1;
 
-       // <autocomplete @item-chosen="setUser" @blur="setUser" :disabled="user" :name="name" title="User" :items="users" label="username"></autocomplete>
-
        this.dests = {
 	 name: 'Destination ' + this.destCount,
 	 userLabels: this.userLabels,
@@ -215,7 +224,6 @@
      },
      
      getUsername: function(username, label) {
-       console.log('getUsername username:', username, 'label:', label);
        this.userName = username;
 
        if (this.users[username]) {
@@ -233,6 +241,11 @@
        } else {
 	 return '';
        }
+     },
+
+     submitRouteForm: function(event) {
+       event.preventDefault();
+       console.log('submitting form...');
      }
    },
 
