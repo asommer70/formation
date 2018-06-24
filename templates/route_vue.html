@@ -4,7 +4,7 @@
 
  Vue.component('autocomplete', {
    delimiters: ["<%","%>"],
-   props: ['name', 'title', 'items', 'label'],
+   props: ['name', 'title', 'items', 'label', 'disabled'],
    data: function() {
      return {
        item: '',
@@ -36,13 +36,17 @@
        set: function(items) {
 	 return items;
        }
+     },
+
+     isDisabled: function() {
+       return this.disabled === 'disabled';
      }
    },
    
    template: `
      <div>
        <label :for="inputId"><% title %></label>
-       <input type="text" v-model="item" :name="name" @keydown="filterItems" :data-toggle="dropdownId" :id="inputId" />
+       <input type="text" v-model="item" :name="name" @keydown="filterItems" :data-toggle="dropdownId" :id="inputId" :disabled="isDisabled" />
        <div class="dropdown-pane" :id="dropdownId" data-dropdown>
 	 <ul class="no-bullet">
 	   <li v-for="item in filteredItems" @click="setItem(item)">
@@ -56,11 +60,17 @@
    methods: {
      filterItems: function(event) {
        this.item = event.target.value;
+       if (event.target.value === "") {
+	 this.setItem("");
+       }
      },
 
      setItem: function(item) {
        this.item = item[this.label];
        $('#' + this.dropdownId).foundation('close');
+
+       // Emit event to disable the other option.
+       this.$emit('item-chosen', item);
      }
    }
  });
@@ -70,8 +80,8 @@
      delimiters: ["<%","%>"],
      data: function() {
        return {
-	 userName: '',
-	 groupName: ''
+	 user: '',
+	 group: ''
        }
      },
      props: ['name', 'userLabels', 'groupLabels', 'users', 'groups', 'isRemoveable'],
@@ -83,35 +93,36 @@
 	   <hr v-if="isRemoveable" />
 	 </div>
 	 <div class="card-section">
-	   <autocomplete :name="name" title="User" :items="users" label="username"></autocomplete>
+	   <autocomplete @item-chosen="setUser" @blur="setUser" :disabled="user" :name="name" title="User" :items="users" label="username"></autocomplete>
 	   
-	   <autocomplete :name="name" title="Group" :items="groups" label="name"></autocomplete>
+	   <autocomplete @item-chosen="setGroup" @blur="setGroup" :disabled="group" :name="name" title="Group" :items="groups" label="name"></autocomplete>
 	 </div>
        </div>
      `
      ,
 
      methods: {
-       /* getAutoComponent: function(input) {
-	  // Needed for v-autocomplete.
-	  console.log('getAutoComponent input:', input);
-	* },
-	* 
-	* getUsername: function(username) {
-	  console.log('getUsername username:', username);
-	  return usernamess.username;
-	  // this.userName = username;
-	* },
+       setUser: function(item) {
+         this.user = item;
 
-	* getGroupName: function(groupname) {
-	  this.groupName = groupname;
-	  
-	  if (this.groups[groupname]) {
-	  return this.groups[groupname].name;
-	  } else {
-	  return '';
-	  }
-	* } */
+	 if (item !== "") {
+	   this.group = 'disabled';
+	 } else {
+	   this.group = '';
+	 }
+	 this.$forceUpdate();
+       },
+
+       setGroup: function(item) {
+	 this.group = item;
+
+	 if (item !== "") {
+	   this.user = 'disabled';
+	 } else {
+	   this.user = '';
+	 }
+	 this.$forceUpdate();
+       }
      },
 
      components: {name: 'autocomplete'}
@@ -167,7 +178,7 @@
        get: function() {
 	 return [
 	   {name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-	   //{name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	   {name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
 	 ];
        },
        
@@ -180,6 +191,8 @@
    methods: {
      addDest: function(event) {
        this.destCount = this.destCount + 1;
+
+       // <autocomplete @item-chosen="setUser" @blur="setUser" :disabled="user" :name="name" title="User" :items="users" label="username"></autocomplete>
 
        this.dests = {
 	 name: 'Destination ' + this.destCount,

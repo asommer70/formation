@@ -6,47 +6,52 @@
   
   <h1>{% if not route.instance.pk %}Create Route{% else %}Edit Route{% endif %}</h1>
   <br />
-  
-      <form method="post" id="route-form">
-	{{ route.as_p }}
-	{% csrf_token %}
 
-	<div class="grid-container">
+  <form method="post" id="route-form">
 
-	  <destination v-for="dest in dests"
-		       :key="dest.name"
-		       :name="dest.name"
-		       :user-labels="dest.userLabels"
-		       :group-labels="dest.groupLabels"
-		       :users="dest.users"
-		       :groups="dest.groups"
-		       :is-removeable="dest.isRemoveable"></destination>
-	  
+    <div class="row">
+      <div class="columns large-12">
+	  {{ route.as_p }}
+	  {% csrf_token %}
 
-	  <div id="archiveDest" class="card route-dest-card">
-	    <div class="card-divider">
-	      Archive
+	  <div class="grid-container">
+
+	    <destination v-for="dest in dests"
+			 :key="dest.name"
+			 :name="dest.name"
+			 :user-labels="dest.userLabels"
+			 :group-labels="dest.groupLabels"
+			 :users="dest.users"
+			 :groups="dest.groups"
+			 :is-removeable="dest.isRemoveable"></destination>
+
+
+	    <div id="archiveDest" class="card route-dest-card">
+	      <div class="card-divider">
+		Archive
+	      </div>
+	      <div class="card-section">
+		The Final Countdown... err Destination
+	      </div>
 	    </div>
-	    <div class="card-section">
-	     The Final Countdown... err Destination
-	    </div>
 	  </div>
-	</div>
+      </div>
+    </div>    
 
-	<div class="row">
-	  <div class="columns large-4">
-	    <button class="button small" type="button" @click="addDest">Add Destination</button>
-	  </div>
-	  
-	  <div class="columns large-4">
-	    <input class="button" type="submit" value="Save" />
-	    {% if route.instance.pk %}
-	      <a href="{% url 'routes:detail' pk=route.instance.pk %}" class="button secondary">Cancel</a>
-	      <a href="{% url 'routes:delete' pk=route.instance.pk %}" class="button tiny alert float-right">Delete</a>
-	    {% endif %}
-	  </div>
-	</div>
-      </form>
+    <div class="row">
+      <div class="columns large-4">
+	<button class="button small" type="button" @click="addDest">Add Destination</button>
+      </div>
+
+      <div class="columns large-4">
+	<input class="button small" type="submit" value="Save" />
+	{% if route.instance.pk %}
+	  <a href="{% url 'routes:detail' pk=route.instance.pk %}" class="button secondary">Cancel</a>
+	  <a href="{% url 'routes:delete' pk=route.instance.pk %}" class="button tiny alert float-right">Delete</a>
+	{% endif %}
+      </div>
+    </div>
+  </form>
 
 {% endblock %}
 
