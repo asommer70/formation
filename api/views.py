@@ -6,10 +6,13 @@ from .serializers import (
     FormSerializer,
     InputSerializer,
     UserSerializer,
-    GroupSerializer
+    GroupSerializer,
+    RouteSerializer,
+    DestinationSerializer
 )
 from forms.models import Form
 from inputs.models import Input
+from routes.models import Route, Destination
 
 
 class ListCreateForm(generics.ListCreateAPIView):
@@ -45,4 +48,16 @@ class ListCreateUser(generics.ListCreateAPIView):
 class ListCreateGroup(generics.ListCreateAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    authentication_classes = (TokenAuthentication,)
+
+
+class ListCreateRoute(generics.ListCreateAPIView):
+    queryset = Route.objects.all()
+    serializer_class = RouteSerializer
+    authentication_classes = (TokenAuthentication,)
+
+
+class ListCreateDestination(generics.ListCreateAPIView):
+    queryset = Destination.objects.all()
+    serializer_class = DestinationSerializer
     authentication_classes = (TokenAuthentication,)

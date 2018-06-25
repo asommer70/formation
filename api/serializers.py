@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from inputs.models import Input
 from forms.models import Form
+from routes.models import Route, Destination
 
 
 User = get_user_model()
@@ -48,3 +49,30 @@ class InputSerializer(serializers.ModelSerializer):
             'user'
         )
         model = Input
+
+
+class RouteSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'form',
+            'user',
+            'group'
+        )
+        model = Route
+
+
+class DestinationSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'route',
+            'step',
+            'user',
+            'group'
+        )
+        model = Destination

@@ -12,4 +12,7 @@ urlpatterns = [
 
     path('users/', views.ListCreateUser.as_view(), name="users"),
     path('groups/', views.ListCreateGroup.as_view(), name="groups"),
+
+    path('routes/', views.ListCreateRoute.as_view(), name="routes"),
+    path('destinations/', views.ListCreateDestination.as_view(), name="destinations"),
 ]

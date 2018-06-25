@@ -20,7 +20,7 @@
 	     {% endfor %}
 	  </ul>
 
-	  <a href="{% url 'routes:create' %}" class="button small">Add Route</a>
+	  <a href="{% url 'routes:create' %}?form={{form.id}}" class="button small">Add Route</a>
 	</div>
       </li>
     {% endfor %}

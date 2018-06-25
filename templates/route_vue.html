@@ -1,7 +1,7 @@
 
 <script type="text/javascript">
- // Vue.use(VAutocomplete.default)
-
+ var formId = parseInt(window.location.search.split('?')[1].split('=')[1]);
+ 
  Vue.component('autocomplete', {
    delimiters: ["<%","%>"],
    props: ['name', 'title', 'items', 'label', 'disabled'],
@@ -98,7 +98,7 @@
        <div class="card route-dest-card">
 	 <div v-bind:class="[isRemoveable ? 'card-section' : 'card-divider']">
 	   <span class="float-left"><% name %></span>
-	   <button type="button" v-if="isRemoveable" class="button tiny secondary float-right">&times;</button>
+	   <button type="button" v-if="isRemoveable" class="button tiny secondary float-right" @click="removeDest">&times;</button>
 	   <hr v-if="isRemoveable" />
 	 </div>
 	 <div class="card-section">
@@ -133,7 +133,11 @@
 	   this.user = '';
 	 }
 	 this.$forceUpdate();
-       }
+       },
+
+       removeDest: function(event) {
+	 console.log('removeDest event:', event);
+       },
      },
 
      components: {name: 'autocomplete'}
@@ -212,7 +216,19 @@
 	 isRemoveable: true
        };
 
-       // TODO:as send Ajax request to create a new Destination object.
+       // Send Ajax request to create a new Destination object.
+       $.ajax({
+	 url: '/api/destinations/',
+	 method: 'post',
+	 data: {step: (this.dests.length -1) + 1, },
+	 headers: {
+	   Authorization: 'Token ' + token,
+	   contentType: 'application/json; charset=utf-8'
+	 },
+	 success: function(data) {
+	   console.log('adDest post data:', data);
+	 }
+       });
 
        // Need to force a rerender I guess due to dests being a computed property...
        this.$forceUpdate();

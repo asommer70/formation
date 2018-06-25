@@ -28,7 +28,13 @@ class Route(models.Model):
 class Destination(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    route = models.ForeignKey(Route, on_delete=models.CASCADE, default=None)
+    route = models.ForeignKey(
+        Route,
+        on_delete=models.CASCADE,
+        default=None,
+        blank=True,
+        null=True
+    )
     step = models.IntegerField(default=1)
     user = models.ForeignKey(
         User,
