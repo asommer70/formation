@@ -83,7 +83,7 @@
 	 group: ''
        }
      },
-     props: ['id', 'name', 'userLabels', 'groupLabels', 'users', 'groups', 'isRemoveable'],
+     props: ['id', 'name', 'users', 'groups', 'isRemoveable'],
 
      mounted: function() {
        var cards = $('.card.route-dest-card');
@@ -98,7 +98,7 @@
        <div class="card route-dest-card">
 	 <div v-bind:class="[isRemoveable ? 'card-section' : 'card-divider']">
 	   <span class="float-left"><% name %></span>
-	   <button type="button" v-if="isRemoveable" class="button tiny secondary float-right" @click="removeDest" :data-id="id">&times;</button>
+	   <button type="button" v-if="isRemoveable" class="button tiny secondary float-right" @click="removeDest" :name="id">&times;</button>
 	   <hr v-if="isRemoveable" />
 	 </div>
 	 <div class="card-section">
@@ -136,7 +136,7 @@
        },
 
        removeDest: function(event) {
-	 this.$emit('remove-dest', $(event.target).data().id);
+	 this.$emit('remove-dest', event.target.name);
        },
      },
 
@@ -152,19 +152,19 @@
    },
    
    data: {
-     userName: '',
-     groupName: '',
+     /* userName: '',
+      * groupName: '', */
      destCount: 1,
-     userLabels: [
-       {% for user in users %}
-       '{{user.username}}',
-       {% endfor %}
-     ],
-     groupLabels: [
-       {% for group in groups %}
-       '{{group.name}}',
-       {% endfor %}
-     ],
+     /* userLabels: [
+      *   {% for user in users %}
+      *   '{{user.username}}',
+      *   {% endfor %}
+      * ],
+      * groupLabels: [
+      *   {% for group in groups %}
+      *   '{{group.name}}',
+      *   {% endfor %}
+      * ], */
      users: [
        {% for user in users %}
        {
@@ -182,10 +182,6 @@
        },
        {% endfor %}
      ],
-     dests:  [
-       {name: 'Start', step: 0, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-       {name: 'Destination 1', step: 1, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-     ],
    },
    
    computed: {
@@ -193,18 +189,58 @@
        return window.location.pathname.split('/');
      },
 
-     /* dests: {
-      *   get: function() {
-	return [
-	{name: 'Start', step: 0, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-	{name: 'Destination 1', step: 1, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-	];
-      *   },
-      *   
-      *   set: function(dest) {
-	this.dests.push(dest);
-      *   }
-      * }, */
+     dests: {
+       get: function() {
+	 return [
+	   {name: 'Start', step: 0, users: this.users, groups: this.groups, isRemoveable: false},
+	   {name: 'Destination 1', step: 1, users: this.users, groups: this.groups, isRemoveable: false},
+	 ];
+       },
+       
+       set: function(dests) {
+
+	 if (dests[0] == 'remove') {
+	   // Remove the first element 'remove' string.
+	   dests.shift();
+	   var self = this;
+
+	   // Remove the old dests.
+	   for (var i = 0; i=this.dests.length; i++) {
+	     self.dests.pop();
+	   }
+
+	   // Add the new dests.
+	   dests.forEach(function(dest) {
+	     self.dests.push(dest);
+	   });
+
+	   // Re-order the dests.
+	   self.dests.forEach(function(dest, idx) {
+	     if (dest.step != idx) {
+	       dest.step = idx;
+	       dest.name = 'Destination ' + idx;
+
+	       // Update the server.
+	       $.ajax({
+		 url: '/api/destinations/' + dest.id,
+		 method: 'put',
+		 data: {step: dest.step},
+		 headers: {
+		   Authorization: 'Token ' + token,
+		   contentType: 'application/json; charset=utf-8'
+		 },
+		 success: function(data) {
+		   // Need to force a rerender I guess due to dests being a computed property...
+		   self.$forceUpdate();
+		 }
+	       });
+	     }
+	   });
+	 } else {
+	   this.dests.push(dest);
+	 }
+       }
+     },
    },
 
    methods: {
@@ -225,8 +261,6 @@
 	   self.dests.push({
 	     id: data.id,
 	     name: 'Destination ' + self.destCount,
-	     userLabels: self.userLabels,
-	     groupLabels: self.groupLabels,
 	     users: self.users,
 	     groups: self.groups,
 	     isRemoveable: true
@@ -252,12 +286,14 @@
 	   contentType: 'application/json; charset=utf-8'
 	 },
 	 success: function(data) {	   
-	   self.dests = self.dests.filter(function(dest) {
+	   var newDests = self.dests.filter(function(dest) {
 	     if (dest.id == destId) {
 	       return false;
 	     }
 	     return true;
 	   });
+	   newDests.unshift('remove');
+	   self.dests = newDests;
 	   
 	   // Need to force a rerender I guess due to dests being a computed property...
 	   self.$forceUpdate();
@@ -266,10 +302,10 @@
 
      },
 
-     getAutoComponent: function(userName) {
-       // Needed for v-autocomplete.
-       console.log('getAutoComponent userName:', userName);
-     },
+     /* getAutoComponent: function(userName) {
+      *   // Needed for v-autocomplete.
+      *   console.log('getAutoComponent userName:', userName);
+      * }, */
      
      getUsername: function(username, label) {
        this.userName = username;

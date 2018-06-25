@@ -20,11 +20,8 @@
   "dependencies": {
     "codemirror": "^5.38.0",
     "foundation-sites": "^6.4.4-rc1",
-    "jQuery.serializeObject": "git+https://github.com/hongymagic/jQuery.serializeObject.git",
     "jquery": "^3.3.1",
-    "v-autocomplete": "^1.8.2",
     "vue": "^2.5.16",
-    "vue-instant": "^1.0.2",
     "vuejs": "^3.0.1"
   }
 }
