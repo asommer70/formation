@@ -18,12 +18,14 @@
 
 	    <destination v-for="dest in dests"
 			 :key="dest.name"
+			 :id="dest.id"
 			 :name="dest.name"
 			 :user-labels="dest.userLabels"
 			 :group-labels="dest.groupLabels"
 			 :users="dest.users"
 			 :groups="dest.groups"
-			 :is-removeable="dest.isRemoveable"></destination>
+			 :is-removeable="dest.isRemoveable"
+	                 @remove-dest="removeDest"></destination>
 
 
 	    <div id="archiveDest" class="card route-dest-card">

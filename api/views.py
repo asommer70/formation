@@ -61,3 +61,9 @@ class ListCreateDestination(generics.ListCreateAPIView):
     queryset = Destination.objects.all()
     serializer_class = DestinationSerializer
     authentication_classes = (TokenAuthentication,)
+
+
+class RetrieveUpdateDestroyDestination(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Destination.objects.all()
+    serializer_class = DestinationSerializer
+    authentication_classes = (TokenAuthentication,)

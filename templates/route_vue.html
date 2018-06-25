@@ -83,7 +83,7 @@
 	 group: ''
        }
      },
-     props: ['name', 'userLabels', 'groupLabels', 'users', 'groups', 'isRemoveable'],
+     props: ['id', 'name', 'userLabels', 'groupLabels', 'users', 'groups', 'isRemoveable'],
 
      mounted: function() {
        var cards = $('.card.route-dest-card');
@@ -98,7 +98,7 @@
        <div class="card route-dest-card">
 	 <div v-bind:class="[isRemoveable ? 'card-section' : 'card-divider']">
 	   <span class="float-left"><% name %></span>
-	   <button type="button" v-if="isRemoveable" class="button tiny secondary float-right" @click="removeDest">&times;</button>
+	   <button type="button" v-if="isRemoveable" class="button tiny secondary float-right" @click="removeDest" :data-id="id">&times;</button>
 	   <hr v-if="isRemoveable" />
 	 </div>
 	 <div class="card-section">
@@ -136,7 +136,7 @@
        },
 
        removeDest: function(event) {
-	 console.log('removeDest event:', event);
+	 this.$emit('remove-dest', $(event.target).data().id);
        },
      },
 
@@ -148,7 +148,7 @@
    el: '#route-form',
    delimiters: ["<%","%>"],
    created: function() {
-     // Add the start and first destination...
+     // TODO:as get a list of Detination objects and add them to dests.
    },
    
    data: {
@@ -182,6 +182,10 @@
        },
        {% endfor %}
      ],
+     dests:  [
+       {name: 'Start', step: 0, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+       {name: 'Destination 1', step: 1, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+     ],
    },
    
    computed: {
@@ -189,49 +193,77 @@
        return window.location.pathname.split('/');
      },
 
-     dests: {
-       get: function() {
-	 return [
-	   {name: 'Start', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-	   {name: 'Destination 1', userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
-	 ];
-       },
-       
-       set: function(dest) {
-	 this.dests.push(dest);
-       }
-     },
+     /* dests: {
+      *   get: function() {
+	return [
+	{name: 'Start', step: 0, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	{name: 'Destination 1', step: 1, userLabels: this.userLabels, groupLabels: this.groupLabels, users: this.users, groups: this.groups, isRemoveable: false},
+	];
+      *   },
+      *   
+      *   set: function(dest) {
+	this.dests.push(dest);
+      *   }
+      * }, */
    },
 
    methods: {
      addDest: function(event) {
+       var self = this;
        this.destCount = this.destCount + 1;
-
-       this.dests = {
-	 name: 'Destination ' + this.destCount,
-	 userLabels: this.userLabels,
-	 groupLabels: this.groupLabels,
-	 users: this.users,
-	 groups: this.groups,
-	 isRemoveable: true
-       };
-
+       
        // Send Ajax request to create a new Destination object.
        $.ajax({
 	 url: '/api/destinations/',
 	 method: 'post',
-	 data: {step: (this.dests.length -1) + 1, },
+	 data: {step: this.destCount},
 	 headers: {
 	   Authorization: 'Token ' + token,
 	   contentType: 'application/json; charset=utf-8'
 	 },
 	 success: function(data) {
-	   console.log('adDest post data:', data);
+	   self.dests.push({
+	     id: data.id,
+	     name: 'Destination ' + self.destCount,
+	     userLabels: self.userLabels,
+	     groupLabels: self.groupLabels,
+	     users: self.users,
+	     groups: self.groups,
+	     isRemoveable: true
+	   });
+	   
+	   // Need to force a rerender I guess due to dests being a computed property...
+	   self.$forceUpdate();
 	 }
        });
 
-       // Need to force a rerender I guess due to dests being a computed property...
-       this.$forceUpdate();
+     },
+
+     removeDest: function(destId) {
+       var self = this;
+       this.destCount = this.destCount + 1;
+       
+       // Send Ajax request to remove the Destination object.
+       $.ajax({
+	 url: '/api/destinations/' + destId,
+	 method: 'delete',
+	 headers: {
+	   Authorization: 'Token ' + token,
+	   contentType: 'application/json; charset=utf-8'
+	 },
+	 success: function(data) {	   
+	   self.dests = self.dests.filter(function(dest) {
+	     if (dest.id == destId) {
+	       return false;
+	     }
+	     return true;
+	   });
+	   
+	   // Need to force a rerender I guess due to dests being a computed property...
+	   self.$forceUpdate();
+	 }
+       });
+
      },
 
      getAutoComponent: function(userName) {
