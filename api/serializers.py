@@ -67,6 +67,8 @@ class RouteSerializer(serializers.ModelSerializer):
 class DestinationSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=False)
     user_id = serializers.IntegerField(required=False)
+    group = GroupSerializer(required=False)
+    group_id = serializers.IntegerField(required=False)
 
     class Meta:
         fields = (
@@ -77,7 +79,8 @@ class DestinationSerializer(serializers.ModelSerializer):
             'step',
             'user',
             'user_id',
-            'group'
+            'group',
+            'group_id'
         )
         model = Destination
 
@@ -86,6 +89,14 @@ class DestinationSerializer(serializers.ModelSerializer):
             user = User.objects.get(pk=validated_data['user_id'])
             if user:
                 instance.user = user
+                instance.save()
+        except KeyError:
+            pass
+
+        try:
+            group = Group.objects.get(pk=validated_data['group_id'])
+            if group:
+                instance.group = group
                 instance.save()
         except KeyError:
             pass

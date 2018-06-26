@@ -61,7 +61,7 @@ class Destination(models.Model):
             self.created_at
         )
 
-    def save(self, *args, **kwargs):
-        print('Destination save() args:', args, 'kwargs:', kwargs)
-        super(Destination, self).save(*args, **kwargs)
-        print('self:', self)
+    ### def save(self, *args, **kwargs):
+    ###     print('Destination save() args:', args, 'kwargs:', kwargs)
+    ###     super(Destination, self).save(*args, **kwargs)
+    ###     print('self:', self)
