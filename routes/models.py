@@ -50,3 +50,18 @@ class Destination(models.Model):
         blank=True,
         null=True
     )
+
+    def __str__(self):
+        return "self.id: {}, route.id: {}, step: {}, user: {}, group: {}, created_at: {}".format(
+            self.id,
+            self.route,
+            self.step,
+            self.user,
+            self.group,
+            self.created_at
+        )
+
+    def save(self, *args, **kwargs):
+        print('Destination save() args:', args, 'kwargs:', kwargs)
+        super(Destination, self).save(*args, **kwargs)
+        print('self:', self)

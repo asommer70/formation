@@ -65,6 +65,9 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class DestinationSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    user_id = serializers.IntegerField()
+
     class Meta:
         fields = (
             'id',
@@ -73,6 +76,19 @@ class DestinationSerializer(serializers.ModelSerializer):
             'route',
             'step',
             'user',
+            'user_id',
             'group'
         )
         model = Destination
+
+    def update(self, instance, validated_data):
+        print('update validated_data:', validated_data)
+        try:
+            user = User.objects.get(pk=validated_data['user_id'])
+            if user:
+                instance.user = user
+                instance.save()
+        except KeyError:
+            pass
+
+        return instance

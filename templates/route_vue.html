@@ -121,6 +121,24 @@
 	 } else {
 	   this.group = '';
 	 }
+
+	 console.log('setUser this.id:', this.id, 'item:', item);
+	 if (this.id) {
+	   // Update the server.
+	   $.ajax({
+	     url: '/api/destinations/' + this.id,
+	     method: 'patch',
+	     data: {user_id: item.id},
+	     headers: {
+	       Authorization: 'Token ' + token,
+	       contentType: 'application/json; charset=utf-8'
+	     },
+	     success: function(data) {
+	       console.log('setUser success data:', data);
+	     }
+	   });
+	 }
+	 
 	 this.$forceUpdate();
        },
 
@@ -231,7 +249,7 @@
 		 },
 		 success: function(data) {
 		   // Need to force a rerender I guess due to dests being a computed property...
-		   self.$forceUpdate();
+		     self.$forceUpdate();
 		 }
 	       });
 	     }
