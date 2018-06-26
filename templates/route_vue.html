@@ -83,7 +83,7 @@
 	 group: ''
        }
      },
-     props: ['id', 'name', 'users', 'groups', 'isRemoveable'],
+     props: ['id', 'name', 'step', 'users', 'groups', 'isRemoveable'],
 
      mounted: function() {
        var cards = $('.card.route-dest-card');
@@ -122,21 +122,7 @@
 	   this.group = '';
 	 }
 
-	 if (item.id) {
-	   // Update the server.
-	   $.ajax({
-	     url: '/api/destinations/' + this.id,
-	     method: 'patch',
-	     data: {user_id: item.id},
-	     headers: {
-	       Authorization: 'Token ' + token,
-	       contentType: 'application/json; charset=utf-8'
-	     },
-	     success: function(data) {
-	       console.log('setUser success data:', data);
-	     }
-	   });
-	 }
+	 this.updateDest('user', item);
 	 
 	 this.$forceUpdate();
        },
@@ -150,23 +136,38 @@
 	   this.user = '';
 	 }
 
-	 if (item.id) {
-	   // Update the server.
-	   $.ajax({
-	     url: '/api/destinations/' + this.id,
-	     method: 'patch',
-	     data: {group_id: item.id},
-	     headers: {
-	       Authorization: 'Token ' + token,
-	       contentType: 'application/json; charset=utf-8'
-	     },
-	     success: function(data) {
-	       console.log('setGroup success data:', data);
-	     }
-	   });
-	 }
+	 this.updateDest('group', item);
 	 
 	 this.$forceUpdate();
+       },
+
+       updateDest: function(type, item) {
+	 var data = {};
+	 var method, url;
+	 if (this.id) {
+	   url = '/api/destinations/' + this.id;
+	   method = 'patch';
+	   data[type + '_id'] = item.id;
+	 } else {
+	   url = '/api/destinations/';
+	   method = 'post';
+	   data['step'] = this.step;
+	   data[type + '_id'] = item.id;
+	 }
+	 
+	 // Update the server.
+	 $.ajax({
+	   url: url,
+	   method: method,
+	   data: data,
+	   headers: {
+	     Authorization: 'Token ' + token,
+	     contentType: 'application/json; charset=utf-8'
+	   },
+	   success: function(data) {
+	     console.log('setUser success data:', data);
+	   }
+	 });
        },
 
        removeDest: function(event) {
