@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User, Group
-from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 
@@ -64,7 +63,8 @@ class ListCreateDestination(generics.ListCreateAPIView):
     authentication_classes = (TokenAuthentication,)
 
 
-class RetrieveUpdateDestroyDestination(generics.UpdateAPIView, generics.RetrieveUpdateDestroyAPIView):
+class RetrieveUpdateDestroyDestination(generics.UpdateAPIView,
+                                       generics.RetrieveUpdateDestroyAPIView):
     queryset = Destination.objects.all()
     serializer_class = DestinationSerializer
     authentication_classes = (TokenAuthentication,)
@@ -72,9 +72,3 @@ class RetrieveUpdateDestroyDestination(generics.UpdateAPIView, generics.Retrieve
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
-    # def patch(self, request, pk):
-    #     # print('patch self.object:', dir(self))
-    #     queryset = self.get_queryset()
-    #     obj = get_object_or_404(queryset, pk=pk)
-    #     print('patch obj:', obj)
-    #     print('patch request.POST:', request.POST)

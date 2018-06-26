@@ -65,8 +65,8 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class DestinationSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    user_id = serializers.IntegerField()
+    user = UserSerializer(required=False)
+    user_id = serializers.IntegerField(required=False)
 
     class Meta:
         fields = (
@@ -82,7 +82,6 @@ class DestinationSerializer(serializers.ModelSerializer):
         model = Destination
 
     def update(self, instance, validated_data):
-        print('update validated_data:', validated_data)
         try:
             user = User.objects.get(pk=validated_data['user_id'])
             if user:

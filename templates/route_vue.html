@@ -122,7 +122,6 @@
 	   this.group = '';
 	 }
 
-	 console.log('setUser this.id:', this.id, 'item:', item);
 	 if (this.id) {
 	   // Update the server.
 	   $.ajax({
@@ -170,19 +169,7 @@
    },
    
    data: {
-     /* userName: '',
-      * groupName: '', */
      destCount: 1,
-     /* userLabels: [
-      *   {% for user in users %}
-      *   '{{user.username}}',
-      *   {% endfor %}
-      * ],
-      * groupLabels: [
-      *   {% for group in groups %}
-      *   '{{group.name}}',
-      *   {% endfor %}
-      * ], */
      users: [
        {% for user in users %}
        {
@@ -319,11 +306,6 @@
        });
 
      },
-
-     /* getAutoComponent: function(userName) {
-      *   // Needed for v-autocomplete.
-      *   console.log('getAutoComponent userName:', userName);
-      * }, */
      
      getUsername: function(username, label) {
        this.userName = username;
