@@ -46,7 +46,7 @@
    template: `
      <div>
        <label :for="inputId"><% title %></label>
-       <input type="text" v-model="item" :name="name" @keydown="filterItems" :data-toggle="dropdownId" :id="inputId" :disabled="isDisabled" />
+       <input type="text" v-model="item" :name="name" @keydown="filterItems" :data-toggle="dropdownId" :id="inputId" :disabled="isDisabled" autocomplete="off" />
        <div class="dropdown-pane" :id="dropdownId" data-dropdown>
 	 <ul class="no-bullet">
 	   <li v-for="item in filteredItems" @click="setItem(item)">
@@ -142,6 +142,7 @@
        },
 
        updateDest: function(type, item) {
+	 var self = this;
 	 var data = {};
 	 var method, url;
 	 if (this.id) {
@@ -165,7 +166,11 @@
 	     contentType: 'application/json; charset=utf-8'
 	   },
 	   success: function(data) {
-	     console.log('setUser success data:', data);
+
+	     // If Destination is step 0 or 1, add the id to destIds.
+	     if (data.step === 0 || data.step === 1) {
+	       self.$emit('add-destid', data.id);
+	     }
 	   }
 	 });
        },
@@ -205,6 +210,7 @@
        },
        {% endfor %}
      ],
+     destIds: []
    },
    
    computed: {
@@ -288,12 +294,18 @@
 	     groups: self.groups,
 	     isRemoveable: true
 	   });
+
+	   self.destIds.push(data.id);
 	   
 	   // Need to force a rerender I guess due to dests being a computed property...
 	   self.$forceUpdate();
 	 }
        });
 
+     },
+
+     addDestId: function(destId) {
+       this.destIds.push(destId);
      },
 
      removeDest: function(destId) {
@@ -317,6 +329,13 @@
 	   });
 	   newDests.unshift('remove');
 	   self.dests = newDests;
+
+	   // Remove the destId from this.destIds.
+	   for (var i=0; i<self.destIds.length; i++) {
+	     if (self.destIds[i] == destId) {
+	       self.destIds.splice(i, 1);
+	     }
+	   }
 	   
 	   // Need to force a rerender I guess due to dests being a computed property...
 	   self.$forceUpdate();
@@ -348,6 +367,25 @@
      submitRouteForm: function(event) {
        event.preventDefault();
        console.log('submitting form...');
+     },
+
+     createRoute: function(event) {
+       console.log('createRoute this.destIds:', this.destIds);
+       var data = {user_id: userId, form_id: formId, dest_ids: this.destIds};
+       console.log('createRoute data:', data);
+       
+       $.ajax({
+	 url: '/api/routes/',
+	 method: 'post',
+	 data: data,
+	 headers: {
+	   Authorization: 'Token ' + token,
+	   contentType: 'application/json; charset=utf-8'
+	 },
+	 success: function(data) {
+	   console.log('createRoute success data:', data);
+	 }
+       });
      }
    },
 

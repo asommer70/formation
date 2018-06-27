@@ -24,7 +24,8 @@
 			 :users="dest.users"
 			 :groups="dest.groups"
 			 :is-removeable="dest.isRemoveable"
-	                 @remove-dest="removeDest"></destination>
+	                 @remove-dest="removeDest"
+	                 @add-destId="addDestId"></destination>
 
 
 	    <div id="archiveDest" class="card route-dest-card">
@@ -45,7 +46,7 @@
       </div>
 
       <div class="columns large-4">
-	<input class="button small success" type="submit" value="Save" />
+	<input class="button small success" type="submit" value="Save" @click="createRoute" />
 	{% if route.instance.pk %}
 	  <a href="{% url 'routes:detail' pk=route.instance.pk %}" class="button secondary">Cancel</a>
 	  <a href="{% url 'routes:delete' pk=route.instance.pk %}" class="button tiny alert float-right">Delete</a>

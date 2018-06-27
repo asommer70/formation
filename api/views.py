@@ -1,6 +1,10 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
+# from rest_framework import serializers
+from django.core import serializers
+from django.http import JsonResponse
+import json
 
 from .serializers import (
     FormSerializer,
@@ -55,6 +59,21 @@ class ListCreateRoute(generics.ListCreateAPIView):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
     authentication_classes = (TokenAuthentication,)
+
+    def post(self, request):
+        post_data = json.loads(request.body)
+        route = Route.objects.create(
+            form_id=post_data['form_id'],
+            user_id=post_data['user_id']
+        )
+
+        # Add the route to each Destination.
+        for dest_id in post_data['dests']:
+            dest = Destination.objects.get(pk=dest_id)
+            dest.route = route
+            dest.save()
+
+        return JsonResponse({'message': 'Route successfully created.'})
 
 
 class ListCreateDestination(generics.ListCreateAPIView):

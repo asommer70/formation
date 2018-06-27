@@ -13,7 +13,13 @@ class Route(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     form = models.ForeignKey(Form, on_delete=models.CASCADE, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=None)
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True
+    )
 
     class Meta:
         ordering = ['-created_at']

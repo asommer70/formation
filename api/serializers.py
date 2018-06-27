@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from rest_framework import serializers
+from drf_compound_fields.fields import ListField
 from inputs.models import Input
 from forms.models import Form
 from routes.models import Route, Destination
@@ -51,19 +52,6 @@ class InputSerializer(serializers.ModelSerializer):
         model = Input
 
 
-class RouteSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = (
-            'id',
-            'created_at',
-            'updated_at',
-            'form',
-            'user',
-            'group'
-        )
-        model = Route
-
-
 class DestinationSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=False)
     user_id = serializers.IntegerField(required=False)
@@ -102,3 +90,24 @@ class DestinationSerializer(serializers.ModelSerializer):
             pass
 
         return instance
+
+
+class RouteSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(required=False)
+    form_id = serializers.IntegerField(required=False)
+    dests = ListField(serializers.IntegerField())
+
+    class Meta:
+        fields = (
+            'id',
+            'created_at',
+            'updated_at',
+            'form',
+            'form_id',
+            'user',
+            'user_id',
+            'group',
+            'group_id',
+            'dests'
+        )
+        model = Route
