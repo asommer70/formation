@@ -61,6 +61,7 @@ class DestinationSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'id',
+            'name',
             'created_at',
             'updated_at',
             'route',
@@ -68,7 +69,8 @@ class DestinationSerializer(serializers.ModelSerializer):
             'user',
             'user_id',
             'group',
-            'group_id'
+            'group_id',
+            'is_removeable'
         )
         model = Destination
 

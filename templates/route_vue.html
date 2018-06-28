@@ -1,17 +1,34 @@
 
 <script type="text/javascript">
- var formId = parseInt(window.location.search.split('?')[1].split('=')[1]);
+
+ var formId;
+ if (window.location.search.split('?')[1]) {
+   formId = parseInt(window.location.search.split('?')[1].split('=')[1]);
+ }
  
  Vue.component('autocomplete', {
    delimiters: ["<%","%>"],
-   props: ['name', 'title', 'items', 'label', 'disabled'],
-   data: function() {
-     return {
-       item: '',
-     }
-   },
+   props: ['name', 'title', 'destitem', 'items', 'label', 'disabled'],
+   /* data: function() {
+    *   return {
+    *     item: '',
+    *   }
+    * }, */
 
    computed: {
+     item: {
+       get: function() {
+	 if (this.destitem) {
+	   return this.destitem;
+	 } else {
+	   return '';
+	 }
+       },
+       set: function(item) {
+	 return item;
+       }
+     },
+     
      dropdownId: function() {
        return 'dd_' + Math.floor((Math.random() * 1000) + 1);
      },
@@ -77,13 +94,13 @@
  Vue.component('destination', function(resolve) {
    resolve({
      delimiters: ["<%","%>"],
-     data: function() {
-       return {
-	 user: '',
-	 group: ''
-       }
-     },
-     props: ['id', 'name', 'step', 'users', 'groups', 'isRemoveable'],
+     /* data: function() {
+      *   return {
+	user: '',
+	group: ''
+      *   }
+      * }, */
+     props: ['id', 'name', 'step', 'destuser', 'destgroup', 'users', 'groups', 'isRemoveable'],
 
      mounted: function() {
        var cards = $('.card.route-dest-card');
@@ -94,6 +111,35 @@
        }
      },
 
+     computed: {
+       user: {
+	 get: function() {
+	   if (this.destuser) {
+	     return this.destuser;
+	   } else {
+	     return '';
+	   }
+	 },
+
+	 set function(user) {
+	   return user;
+	 }
+       },
+       group: {
+	 get: function() {
+	   if (this.destgroup) {
+	     return this.destgroup;
+	   } else {
+	     return '';
+	   }
+	 },
+
+	 set function(group) {
+	   return group;
+	 }
+       },
+     },
+
      template: `
        <div class="card route-dest-card">
 	 <div v-bind:class="[isRemoveable ? 'card-section' : 'card-divider']">
@@ -102,11 +148,11 @@
 	   <hr v-if="isRemoveable" />
 	 </div>
 	 <div class="card-section">
-	   <autocomplete @item-chosen="setUser" @blur="setUser" :disabled="user" :name="name" title="User" :items="users" label="username"></autocomplete>
+	   <autocomplete @item-chosen="setUser" @blur="setUser" :disabled="user" :name="name" title="User" :destitem="user" :items="users" label="username"></autocomplete>
 	   
 	   <small>or</small><br/>
 	   
-	   <autocomplete @item-chosen="setGroup" @blur="setGroup" :disabled="group" :name="name" title="Group" :items="groups" label="name"></autocomplete>
+	   <autocomplete @item-chosen="setGroup" @blur="setGroup" :disabled="group" :name="name" title="Group" :destitem="group" :items="groups" label="name"></autocomplete>
 	 </div>
        </div>
      `
@@ -154,7 +200,11 @@
 	   method = 'post';
 	   data['step'] = this.step;
 	   data[type + '_id'] = item.id;
+	   data['name'] = this.name;
+	   data['is_removeable'] = false;
 	 }
+
+	 console.log('updateDest data:', data, 'item:', item);
 	 
 	 // Update the server.
 	 $.ajax({
@@ -221,8 +271,23 @@
      dests: {
        get: function() {
 	 return [
+	   {% if not object %}
 	   {name: 'Start', step: 0, users: this.users, groups: this.groups, isRemoveable: false},
 	   {name: 'Destination 1', step: 1, users: this.users, groups: this.groups, isRemoveable: false},
+	   {% else %}
+	   {% for dest in object.destination_set.all %}
+	   {
+	     id: {{dest.id}},
+	     name: "{{dest.name}}",
+	     step: {{dest.step}},
+	     user: {% if dest.user %}{id: {{dest.user.id}}, username: "{{dest.user.username}}", email: "{{dest.user.email}}"}{% else %}""{% endif %},
+	     group: {% if dest.group %}{id: {{dest.group.id}}, name: "{{dest.group.name}}"}{% else %}""{% endif %},
+	     users: this.users,
+	     groups: this.groups,
+	     isRemoveable: "{{dest.isRemoveable}}"
+	   },
+	   {% endfor %}
+	   {% endif %}
 	 ];
        },
        
@@ -281,7 +346,7 @@
        $.ajax({
 	 url: '/api/destinations/',
 	 method: 'post',
-	 data: {step: this.destCount},
+	 data: {name: 'Destination ' + this.destCount, step: this.destCount, is_removeable: true},
 	 headers: {
 	   Authorization: 'Token ' + token,
 	   contentType: 'application/json; charset=utf-8'
@@ -289,7 +354,7 @@
 	 success: function(data) {
 	   self.dests.push({
 	     id: data.id,
-	     name: 'Destination ' + self.destCount,
+	     name: data.name,
 	     users: self.users,
 	     groups: self.groups,
 	     isRemoveable: true
@@ -371,19 +436,22 @@
 
      createRoute: function(event) {
        console.log('createRoute this.destIds:', this.destIds);
-       var data = {user_id: userId, form_id: formId, dest_ids: this.destIds};
+       var data = {user_id: userId, form_id: formId, dests: this.destIds};
        console.log('createRoute data:', data);
        
        $.ajax({
 	 url: '/api/routes/',
 	 method: 'post',
-	 data: data,
+	 data: JSON.stringify(data),
+	 dataType: 'json',
+         contentType: 'application/json',
 	 headers: {
 	   Authorization: 'Token ' + token,
-	   contentType: 'application/json; charset=utf-8'
+	   // contentType: 'application/json'
 	 },
 	 success: function(data) {
 	   console.log('createRoute success data:', data);
+	   window.location.href = '/routes/';
 	 }
        });
      }

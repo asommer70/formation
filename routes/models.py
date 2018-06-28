@@ -25,7 +25,10 @@ class Route(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return self.name
+        return "Route for form: {} created: {}".format(
+            self.form.name,
+            self.created_at
+        )
 
     def get_absolute_url(self):
         return reverse('forms:detail', kwargs={'pk': self.pk})
@@ -34,6 +37,12 @@ class Route(models.Model):
 class Destination(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(
+        max_length=255,
+        default=None,
+        blank=True,
+        null=True
+    )
     route = models.ForeignKey(
         Route,
         on_delete=models.CASCADE,
@@ -56,6 +65,7 @@ class Destination(models.Model):
         blank=True,
         null=True
     )
+    is_removeable = models.BooleanField(default=True)
 
     def __str__(self):
         return "self.id: {}, route.id: {}, step: {}, user: {}, group: {}, created_at: {}".format(

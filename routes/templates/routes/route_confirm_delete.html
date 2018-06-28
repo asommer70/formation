@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <h1>Really Delete?</h1>
+  <br />
+  
+  <form method="post">
+    {{form.as_p}}
+    {% csrf_token %}
+    <input class="button alert" type="submit" value="Confirm Delete"/>
+    <a class="button large secondary" href="{% url 'routes:update' pk=route.pk %}">Cancel</a>
+  </form>
+  
+{% endblock %}

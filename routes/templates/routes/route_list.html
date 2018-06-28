@@ -16,7 +16,16 @@
 	<div class="accordion-content" data-tab-content>
 	  <ul>
 	    {% for route in form.route_set.all %}
-	      <li>Route...</li>
+	      <li><a href="{% url 'routes:update' pk=route.pk %}?form={{form.id}}">
+		Starts with:
+		{% if route.destination_set.first.user %}
+		  <span class="badge">{{route.destination_set.first.user.username}}</span>
+		{% else %}
+		  <span class="badge">{{route.destination_set.first.group.name}}</span>
+		{% endif %}
+		&nbsp;&nbsp; Created: 
+		<span class="badge">{{route.created_at|date:"m/d/Y f"}}</span>
+	      </a></li>
 	     {% endfor %}
 	  </ul>
 

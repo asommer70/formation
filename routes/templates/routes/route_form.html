@@ -1,11 +1,12 @@
 {% extends 'layout.html' %}
 
-{% block title %}{% if route.instance %}Edit Route{% else %}New Route{% endif %}{% endblock %}
+{% block title %}{% if object %}Edit Route{% else %}New Route{% endif %}{% endblock %}
 
 {% block body %}
   
-  <h1>{% if not route.instance.pk %}Create Route{% else %}Edit Route{% endif %}</h1>
-  <br />
+  <h1>{% if not object.pk %}Create Route{% else %}Edit Route{% endif %}</h1>
+  {% if object.pk %}<small>Created: {{object.created_at|date:"m/d/Y f"}}</small>{% endif %}
+  <br /><br/>
 
   <form method="post" id="route-form" @submit="submitRouteForm">
 
@@ -21,6 +22,8 @@
 			 :id="dest.id"
 			 :name="dest.name"
 			 :step="dest.step"
+			 :destuser="dest.user.username"
+			 :destgroup="dest.group.name"
 			 :users="dest.users"
 			 :groups="dest.groups"
 			 :is-removeable="dest.isRemoveable"
@@ -38,7 +41,9 @@
 	    </div>
 	  </div>
       </div>
-    </div>    
+    </div>
+
+    <br/><hr/>
 
     <div class="row">
       <div class="columns large-4">
@@ -47,9 +52,9 @@
 
       <div class="columns large-4">
 	<input class="button small success" type="submit" value="Save" @click="createRoute" />
-	{% if route.instance.pk %}
-	  <a href="{% url 'routes:detail' pk=route.instance.pk %}" class="button secondary">Cancel</a>
-	  <a href="{% url 'routes:delete' pk=route.instance.pk %}" class="button tiny alert float-right">Delete</a>
+	{% if object.pk %}
+	  <a href="{% url 'routes:detail' pk=object.pk %}" class="button secondary small">Cancel</a>
+	  <a href="{% url 'routes:delete' pk=object.pk %}" class="button tiny alert float-right">Delete</a>
 	{% endif %}
       </div>
     </div>

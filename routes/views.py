@@ -54,6 +54,7 @@ class RouteUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['users'] = User.objects.all()
         context['groups'] = Group.objects.all()
+        print('RouteUpdateView context:', context)
         return context
 
 
