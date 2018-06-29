@@ -22,8 +22,8 @@
 			 :id="dest.id"
 			 :name="dest.name"
 			 :step="dest.step"
-			 :destuser="dest.user.username"
-			 :destgroup="dest.group.name"
+			 :destuser="dest.user"
+			 :destgroup="dest.group"
 			 :users="dest.users"
 			 :groups="dest.groups"
 			 :is-removeable="dest.isRemoveable"
@@ -53,7 +53,7 @@
       <div class="columns large-4">
 	<input class="button small success" type="submit" value="Save" @click="createRoute" />
 	{% if object.pk %}
-	  <a href="{% url 'routes:detail' pk=object.pk %}" class="button secondary small">Cancel</a>
+	  <a href="{% url 'routes:list' %}" class="button secondary small">Cancel</a>
 	  <a href="{% url 'routes:delete' pk=object.pk %}" class="button tiny alert float-right">Delete</a>
 	{% endif %}
       </div>

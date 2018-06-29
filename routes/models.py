@@ -67,6 +67,9 @@ class Destination(models.Model):
     )
     is_removeable = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ['step']
+
     def __str__(self):
         return "self.id: {}, route.id: {}, step: {}, user: {}, group: {}, created_at: {}".format(
             self.id,
