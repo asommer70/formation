@@ -57,6 +57,7 @@ class DestinationSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(required=False)
     group = GroupSerializer(required=False)
     group_id = serializers.IntegerField(required=False)
+    route_id = serializers.IntegerField(required=False)
 
     class Meta:
         fields = (
@@ -65,6 +66,7 @@ class DestinationSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'route',
+            'route_id',
             'step',
             'user',
             'user_id',

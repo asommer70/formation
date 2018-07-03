@@ -1,4 +1,4 @@
-Cpf
+
 <script type="text/javascript">
 
  var formId;
@@ -19,21 +19,8 @@ Cpf
      item: {
        get: function() {
 	 return this.filteredItem;
-	 /* if (this.filteredItem.length > 0) {
-	    console.log('item.get() this.filteredItem:', this.filteredItem);
-	    return this.filteredItem;
-	    } else {
-	    if (this.destitem.hasOwnProperty('username')) {
-	    return this.destitem.username;
-	    } else if (this.destitem.hasOwnProperty('name')) {
-	    return this.destitem.name;
-	    } else {
-	    return this.filteredItem;
-	    }
-	    } */
        },
        set: function(item) {
-	 console.log('item.set item:', item);
 	 this.filteredItem = item;
        }
      },
@@ -50,10 +37,7 @@ Cpf
      filteredItems: {
        get: function() {
 	 var self = this;
-	 console.log('filteredItems this.item:', this.item);
 	 if (this.item !== '' && typeof(this.item) !== 'object') {
-	   //if (this.item !== '') {
-	   console.log('filteredItems this.items:', this.items);
 	   var regexp = new RegExp(this.item, 'ig');
 	   return self.items.filter(function(val) {
 	     return regexp.test(val[self.label]);
@@ -90,7 +74,6 @@ Cpf
    methods: {
      filterItems: function(event) {
        this.item = event.target.value;
-       console.log('filterItems this.item:', this.item);
        if (event.target.value === "") {
 	 this.setItem("");
        }
@@ -127,26 +110,23 @@ Cpf
      props: ['id', 'name', 'step', 'destuser', 'destgroup', 'users', 'groups', 'isRemoveable'],
 
      created: function() {
+       this.localGroup = this.destgroup;
+       this.localUser = this.destuser;
+     },
+
+     mounted: function() {
        var cards = $('.card.route-dest-card');
        var pathParts = window.location.pathname.split('/');
        
        // "reflow" Foundation when a new Destination component is added to the DOM.
-       if (cards.length > 3 && pathParts[pathParts.length - 1] !== 'edit') {
+       if (cards.length > 3) {
 	 $(cards[cards.length - 2]).foundation();
        }
-       
-       this.localGroup = this.destgroup;
-       this.localUser = this.destuser;
      },
 
      computed: {
        user: {
 	 get: function() {
-	   /* if (this.destuser) {
-	      return this.destuser;
-	      } else {
-	      return localUser;
-	      } */
 	   return this.localUser;
 	 },
 
@@ -156,11 +136,6 @@ Cpf
        },
        group: {
 	 get: function() {
-	   /* if (this.destgroup) {
-	      return this.destgroup;
-	      } else {
-	      return localGroup;
-	      } */
 	   return this.localGroup;
 	 },
 
@@ -268,9 +243,6 @@ Cpf
  var app = new Vue({
    el: '#route-form',
    delimiters: ["<%","%>"],
-   created: function() {
-     // TODO:as get a list of Detination objects and add them to dests.
-   },
    
    data: {
      destCount: 1,
@@ -296,9 +268,12 @@ Cpf
 		{% for dest in object.destination_set.all %}
 		{{dest.id}},
 		{% endfor %}
-	      ]
+	      ],
      {% else %}
-     []
+     [],
+     {% endif %}
+     {% if object %}
+     routeId: {{object.id}}
      {% endif %}
    },
    
@@ -364,7 +339,7 @@ Cpf
 		 },
 		 success: function(data) {
 		   // Need to force a rerender I guess due to dests being a computed property...
-		     self.$forceUpdate();
+		   self.$forceUpdate();
 		 }
 	       });
 	     }
@@ -385,7 +360,7 @@ Cpf
        $.ajax({
 	 url: '/api/destinations/',
 	 method: 'post',
-	 data: {name: 'Destination ' + this.destCount, step: this.destCount, is_removeable: true},
+	 data: {name: 'Destination ' + this.destCount, step: this.destCount, is_removeable: true, route_id: this.routeId},
 	 headers: {
 	   Authorization: 'Token ' + token,
 	   contentType: 'application/json; charset=utf-8'
@@ -488,7 +463,6 @@ Cpf
 	   // contentType: 'application/json'
 	 },
 	 success: function(data) {
-	   console.log('createRoute success data:', data);
 	   window.location.href = '/routes/';
 	 }
        });
