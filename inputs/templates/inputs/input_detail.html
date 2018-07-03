@@ -20,8 +20,36 @@
 	  {% endautoescape %}
 
 	  <br/><hr/>
+
+	  <h4>Routes</h4>
+	  
+	  <ul class="no-bullet">
+	    {% for route in input.form.route_set.all %}
+	      <li>
+		<strong>Me</strong> &#x21e8; 
+		{% for dest in route.destination_set.all %}
+		  {% if dest.user %}
+		    {{dest.user.username}}
+		  {% else %}
+		    <label class="route-group-select-label">{{dest.group.name}}</label>
+		    <select class="route-group-select" id="{{dest.id}}_{{dest.step}}" name="{{dest.step}}_{{dest.step}}_{{dest.group.id}}">
+		      <option value=""></option>
+		      {% for user in dest.group.user_set.all %}
+			<option value="{{user.id}}">{{user.username}}</option>
+		      {% endfor %}
+		    </select>
+		  {% endif %}
+		  &#x21e8;
+		{% endfor %}
+		Archive
+		&nbsp;&nbsp;
+		<button type="button" class="button default tiny">Send</button>
+	      </li>
+	    {% endfor %}
+	  </ul>
+
+	  <br/><hr/>
 	  <button type="button" class="button success" @click="submitForm">Update</button>
-	  <button type="button" class="button default">Route</button>
 	  <a href="{% url 'inbox:delete' pk=input.pk %}" class="button tiny alert float-right">Delete</a>
 	</form>
       </div>
