@@ -21,7 +21,7 @@ class RouteTestCase(TestCase):
             password='others',
             email='other@thehoick.com'
         )
-                
+
         self.group = Group.objects.create(name="IT Dept")
         self.user.groups.add(self.group)
 
