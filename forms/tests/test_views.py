@@ -14,7 +14,8 @@ class FormViewsTestCase(TestCase):
 
         self.form = Form.objects.create(
             name='Test Form',
-            path='media/forms/test_form.html'
+            path='media/forms/test_form.html',
+            content='<input name="test" type="text"/>'
         )
 
         self.user = User.objects.create(
@@ -42,7 +43,10 @@ class FormViewsTestCase(TestCase):
         url = reverse('forms:create')
         self.client.force_login(user=self.user)
 
-        response = self.client.post(url, {'name': 'Test POST Form'})
+        response = self.client.post(url, {
+            'name': 'Test POST Form',
+            'content': '<input type="text" name="tester"/>'
+        })
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/forms/')
@@ -61,7 +65,10 @@ class FormViewsTestCase(TestCase):
         url = reverse('forms:update', kwargs={'pk': self.form.pk})
         self.client.force_login(user=self.user)
 
-        response = self.client.post(url, {'public': True})
+        response = self.client.post(url, {
+            'public': True,
+            'content': '<input type="text" name="tester"/>'
+        })
         form = Form.objects.get(pk=self.form.pk)
 
         self.assertEqual(response.status_code, 302)

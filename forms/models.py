@@ -29,10 +29,11 @@ class Form(models.Model):
     def save(self, *args, **kwargs):
         from bs4 import BeautifulSoup
         # Make sure inputs, textareas, and selects have bound Vue attributes.
+        fields = {}
+
         if self.content:
             soup = BeautifulSoup(self.content, 'html.parser')
 
-            fields = {}
             # Add a v-model and @blur attribute to all inputs, textareas,
             # and selects.
             for input in soup.find_all('input'):

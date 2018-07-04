@@ -17,12 +17,13 @@ class InputTestCase(TestCase):
 
         self.form = Form.objects.create(
             name='Test Form',
-            path='media/forms/test_form.html'
+            path='media/forms/test_form.html',
+            content='<input name="test" type="text" />'
         )
 
         self.input = Input.objects.create(
             status='new',
-            data={"things": "yes please...", "more": True},
+            data={"test": "yes please...", "more": True},
             user=self.user,
             form=self.form
         )

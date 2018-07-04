@@ -27,7 +27,8 @@ class RouteTestCase(TestCase):
 
         self.form = Form.objects.create(
             name='Test Form',
-            path='media/forms/test_form.html'
+            path='media/forms/test_form.html',
+            content='<input type="text" name="tester"/>'
         )
 
         self.route = Route.objects.create(

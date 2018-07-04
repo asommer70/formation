@@ -43,7 +43,7 @@ class FormTestCase(TestCase):
         self.assertEqual(self.form.name, 'Test Form')
         self.assertFalse(self.form.public)
         self.assertTrue('v-model' in self.form.content)
-        self.assertEqual(self.form.content.count('v-model'), 2)
+        self.assertEqual(self.form.content.count('v-model'), 8)
 
     def test_update(self):
         self.form.public = True
