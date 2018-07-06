@@ -41,6 +41,26 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = InputSerializer
     authentication_classes = (TokenAuthentication,)
 
+    def post(self, request, pk):
+        if request.POST:
+            post_data = request.POST
+        else:
+            post_data = json.loads(request.body)
+
+        input = Input.objects.get(pk=pk)
+        input.status = post_data['status']
+        input.route = Route.objects.get(pk=post_data['route_id'])
+        input.route_holder = User.objects.get(
+            username=post_data['route_holder'])
+        input.route_sender = User.objects.get(
+            username=post_data['route_holder'])
+        input.current_dest = Destination.objects.get(
+            pk=post_data['current_dest_id'])
+        input.step = post_data['step']
+        input.save()
+
+        return JsonResponse({'message': 'Input successfully updated.'})
+
 
 class ListCreateUser(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -60,10 +80,7 @@ class ListCreateRoute(generics.ListCreateAPIView):
     authentication_classes = (TokenAuthentication,)
 
     def post(self, request):
-        print('request.body:', request.body)
-        print('request.POST:', request.POST)
         post_data = json.loads(request.body)
-        print('post_data:', post_data)
         route = Route.objects.create(
             form_id=post_data['form_id'],
             user_id=post_data['user_id']
