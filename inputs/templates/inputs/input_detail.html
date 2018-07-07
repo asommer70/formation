@@ -22,34 +22,9 @@
 	  <br/><hr/>
 
 	  <h4>Routes</h4>
-	  
+
 	  <ul class="no-bullet">
-	    {% for route in input.form.route_set.all %}
-	      <li>
-		<strong>Me</strong> &#x21e8; 
-		{% for dest in route.destination_set.all %}
-		  {% if dest.user %}
-		    {{dest.user.username}}
-		  {% else %}
-		    {% if dest.step == 0 or dest.step == input.step %}
-		      <label class="route-group-select-label">{{dest.group.name}}</label>
-		      <select class="route-group-select" id="{{dest.id}}_{{dest.step}}" name="{{dest.step}}_{{dest.step}}_{{dest.group.id}}">
-			<option value=""></option>
-			{% for user in dest.group.user_set.all %}
-			  <option value="{{user.id}}">{{user.username}}</option>
-			{% endfor %}
-		      </select>
-		    {% else %}
-		      {{dest.group.name}}
-		    {% endif %}
-		  {% endif %}
-		  &#x21e8;
-		{% endfor %}
-		Archive
-		&nbsp;&nbsp;
-		<button type="button" class="button default tiny">Send</button>
-	      </li>
-	    {% endfor %}
+	    <route v-for="route in routes" :key="route.id" :id="route.id" :dests="route.dests"></route>
 	  </ul>
 
 	  <br/><hr/>
