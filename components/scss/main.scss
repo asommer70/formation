@@ -45,3 +45,15 @@
     display: inline-block;
     width: 150px;
 }
+
+.blue {
+    color: map-get($foundation-palette, primary);
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.bold {
+    font-weight: bold;
+}

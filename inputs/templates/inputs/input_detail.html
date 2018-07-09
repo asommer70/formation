@@ -24,7 +24,11 @@
 	  <h4>Routes</h4>
 
 	  <ul class="no-bullet">
-	    <route v-for="route in routes" :key="route.id" :input-id="input.id" :id="route.id" :dests="route.dests"></route>
+	    {% if input.status == 'new' %}
+	      <route v-for="route in routes" :key="route.id" :input-id="input.id" :id="route.id" :dests="route.dests"></route>
+	    {% else %}
+	      <route :input-id="input.id" :id="input.route.id" :dests="input.route.dests" :input-current-dest="input.current_dest"></route>
+	    {% endif %}
 	  </ul>
 
 	  <br/><hr/>
