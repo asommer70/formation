@@ -9,7 +9,7 @@
      <span v-if="user"> <% user %> &#x21e8; </span>
      <span v-else>
        <label class="route-group-select-label"><% group.name %></label>
-       <select v-if="currentDest" class="route-group-select" :id="id" :name="group.id">
+       <select v-if="currentDest" v-model="setUser" class="route-group-select" :id="id" :name="group.id">
 	 <option value=""></option>
 	 <option v-for="user in group.members" :value="user.id">
 	   <% user.username %>
@@ -21,22 +21,44 @@
 
    data: function() {
      return {
+       selectedUser: ''
      };
    },
 
    computed: {
      currentDest: function() {
-       console.log('currentDest:', this.step == this.inputStep);
        return this.step == this.inputStep;
+     },
+
+     setUser: {
+       get: function() {
+	 return this.selectedUser;
+       },
+
+       set: function(user) {
+	 this.selectedUser = user;
+	 this.$emit('dest-set', {userId: this.selectedUser, destId: this.id, step: this.step});
+       }
      }
-   }
+   },
+
+   /* methods: {
+    *   setUser: function(event) {
+    *     console.log('setUser event:', event);
+    *     console.log('setUser this.selectedUser:', this.selectedUser);
+    *     this.$emit('dest-set', {userId: this.selectedUser, destId: this.id});
+    *   }
+    * } */
  });
 
  Vue.component('route', {
    delimiters: ["<%","%>"],
-   props: ['id', 'dests'],
+   props: ['id', 'dests', 'inputId'],
    data: function() {
      return {
+       userId: 0,
+       currentDestId: 0,
+       step: 0
      };
    },
 
@@ -51,7 +73,8 @@
 	 :step="dest.step"
 	 :user="dest.user"
 	 :input-step="dest.inputStep"
-	 :group="dest.group"></destination>
+	 :group="dest.group"
+	 @dest-set="setDest"></destination>
        
        Archive
        &nbsp;&nbsp;
@@ -60,9 +83,43 @@
    `,
 
    methods: {
+     setDest: function(dest) {
+       console.log('setDest dest:', dest);
+       this.currentDestId = dest.destId;
+       this.userId = dest.userId;
+       this.step = dest.step;
+     },
+     
      routeForm: function(event) {
-       console.log('route routeForm...');
-     }
+       console.log('route routeForm this.inputId', this.inputId, 'this.userId:', this.userId, 'this.currentDestId:', this.currentDestId);
+       console.log('route routeForm route_sender userId:', userId);
+
+       var data = {
+	 route_id: this.id,
+	 route_sender: userId,
+	 route_holder: this.userId,
+	 current_dest_id: this.currentDestId,
+	 step: this.step + 1,
+	 route_date: new Date(),
+	 status: 'routed'
+       };
+
+       console.log('route routeForm data:', data);
+       
+       $.ajax({
+	 url: '/api/inbox/' + this.inputId,
+	 method: 'patch',
+	 data: data,
+	 headers: {
+	   Authorization: 'Token ' + token,
+	   contentType: 'application/json; charset=utf-8'
+	 },
+	 success: function(data) {
+	   console.log('route routeForm success patch data:', data);
+	   //window.location.reload();
+	 }
+       });
+     },
    }
  });
  
@@ -85,17 +142,17 @@
 			   user: {% if dest.user %}"{{dest.user.username}}"{% else %}""{% endif %},
 			   group: {% if dest.group %}
 				  {
-				   id: {{dest.group.id}},
-				   name: "{{dest.group.name}}",
-				   members: [
-				     {% for user in dest.group.user_set.all %}
-				     {id: {{user.id}}, username: "{{user.username}}"},
-				     {% endfor %}
-				   ],
+				    id: {{dest.group.id}},
+				    name: "{{dest.group.name}}",
+				    members: [
+				      {% for user in dest.group.user_set.all %}
+				      {id: {{user.id}}, username: "{{user.username}}"},
+				      {% endfor %}
+				    ],
 				  }
-				   {% else %}
-			             ""
-				   {% endif %},
+			   {% else %}
+			   ""
+			   {% endif %},
 			   step: {{dest.step}},
 			   inputStep: {{input.step}},
 			   name: "{{dest.name}}"
@@ -157,7 +214,7 @@
      },
 
      routeForm: function(event) {
-       console.log('routeForm... event:', event);
+       console.log('app routeForm... event:', event);
      }
    },
 

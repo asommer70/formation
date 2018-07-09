@@ -93,12 +93,12 @@ class RoutingTestCase(TestCase):
 
     def test_api_input_update(self):
         url = reverse('api:input', kwargs={'pk': self.input.pk})
-        request = self.factory.post(url, {
+        request = self.factory.patch(url, {
             'status': 'routed',
             'route_id': self.route.id,
             'route_date': Now(),
-            'route_holder': self.group.user_set.last(),
-            'route_sender': self.user,
+            'route_holder': self.group.user_set.last().id,
+            'route_sender': self.user.id,
             'current_dest_id':  Destination.objects.filter(
                                     route=self.route,
                                     step=1

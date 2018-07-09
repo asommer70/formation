@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
-# from rest_framework import serializers
 from django.http import JsonResponse
 import json
 
@@ -41,7 +40,7 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = InputSerializer
     authentication_classes = (TokenAuthentication,)
 
-    def post(self, request, pk):
+    def patch(self, request, pk):
         if request.POST:
             post_data = request.POST
         else:
@@ -50,10 +49,8 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
         input = Input.objects.get(pk=pk)
         input.status = post_data['status']
         input.route = Route.objects.get(pk=post_data['route_id'])
-        input.route_holder = User.objects.get(
-            username=post_data['route_holder'])
-        input.route_sender = User.objects.get(
-            username=post_data['route_holder'])
+        input.route_holder = User.objects.get(pk=post_data['route_holder'])
+        input.route_sender = User.objects.get(pk=post_data['route_holder'])
         input.current_dest = Destination.objects.get(
             pk=post_data['current_dest_id'])
         input.step = post_data['step']
