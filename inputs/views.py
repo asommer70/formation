@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -9,6 +10,7 @@ from django.views.generic import (
     DeleteView
 )
 from .models import Input
+from .mixins import InputHolderMixin
 
 
 class InputListView(LoginRequiredMixin, ListView):
@@ -18,7 +20,7 @@ class InputListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, *args, **kwargs):
         qs = super(InputListView, self).get_queryset(*args, **kwargs).filter(
-            user=self.request.user
+            Q(user=self.request.user) | Q(route_holder=self.request.user)
         )
         return qs
 
@@ -29,7 +31,7 @@ class InputCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('inbox')
 
 
-class InputDetailView(LoginRequiredMixin, DetailView):
+class InputDetailView(LoginRequiredMixin, InputHolderMixin, DetailView):
     model = Input
 
 
