@@ -45,7 +45,7 @@
 
  Vue.component('route', {
    delimiters: ["<%","%>"],
-   props: ['id', 'dests', 'inputId', 'inputCurrentDest'],
+   props: ['id', 'dests', 'inputId', 'inputCurrentDest', 'inputCurrentStep', 'routeHolder'],
    data: function() {
      return {
        userId: 0,
@@ -58,10 +58,22 @@
      if (this.inputCurrentDest) {
        this.currentDestId = this.inputCurrentDest;
      }
+
+     if (this.routeHolder) {
+       this.userId = this.routeHolder;
+     }
+
+     if (this.inputCurrentStep) {
+       this.step = this.inputCurrentStep;
+     }
    },
 
    template: `
      <li>
+       <br />
+       <button type="button" class="button default small" @click="routeForm" v-if="routeHolder">Send Back</button> 
+       &nbsp;
+
        <strong>Me</strong> &#x21e8;
        
        <destination v-for="dest in dests"
@@ -77,6 +89,7 @@
        Archive
        &nbsp;&nbsp;
        <button type="button" class="button default small" @click="routeForm" v-if="inputCurrentDest === undefined">Send</button>
+       <button type="button" class="button default small" @click="routeForm" v-else-if="routeHolder">Send Forward</button>
      </li>
    `,
 
@@ -92,12 +105,17 @@
        console.log('route routeForm this.inputId', this.inputId, 'this.userId:', this.userId, 'this.currentDestId:', this.currentDestId);
        console.log('route routeForm route_sender userId:', userId);
 
+       var dir = 1;
+       if (event.target.innerHTML === 'Send Back') {
+	 dir = -1;
+       }
+
        var data = {
 	 route_id: this.id,
 	 route_sender: userId,
 	 route_holder: this.userId,
 	 current_dest_id: this.currentDestId,
-	 step: this.step,
+	 step: this.step + dir,
 	 route_date: new Date(),
 	 status: 'routed'
        };
@@ -114,7 +132,7 @@
 	 },
 	 success: function(data) {
 	   console.log('route routeForm success patch data:', data);
-	   //window.location.reload();
+	   // window.location.reload();
 	 }
        });
      },
@@ -169,8 +187,8 @@
 	 id: {{input.id}},
 	 step: {{input.step}},
 	 current_dest: {% if input.status == 'routed' %}{{input.current_dest.id}}{% else %}false{% endif %},
-	 route_holder: "{{input.route_holder}}",
-         route_sender: "{{input.route_sender}}",
+	 route_holder: {{input.route_holder.id}},
+         route_sender: {{input.route_sender.id}},
 	 routed_date: "{{input.route_date}}",
 	 {% if input.status == 'routed' %}
 	 route: {

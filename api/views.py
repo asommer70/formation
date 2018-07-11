@@ -46,6 +46,8 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
         else:
             post_data = json.loads(request.body)
 
+        print('post_data:', post_data)
+
         input = Input.objects.get(pk=pk)
         input.status = post_data['status']
         input.route = Route.objects.get(pk=post_data['route_id'])
