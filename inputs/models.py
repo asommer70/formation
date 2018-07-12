@@ -63,8 +63,8 @@ class Input(models.Model):
 
 class Approval(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=None)
-    input = models.ForeignKey(Input, on_delete=models.DO_NOTHING, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    input = models.ForeignKey(Input, on_delete=models.CASCADE, default=None)
 
     class Meta:
         ordering = ['-created_at']

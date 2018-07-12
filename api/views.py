@@ -50,12 +50,8 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
 
         input = Input.objects.get(pk=pk)
         input.status = post_data['status']
-        input.route = Route.objects.get(pk=post_data['route_id'])
         input.route_holder = User.objects.get(pk=post_data['route_holder'])
         input.route_sender = User.objects.get(pk=post_data['route_holder'])
-        input.current_dest = Destination.objects.get(
-            pk=post_data['current_dest_id'])
-        input.step = post_data['step']
         input.save()
 
         return JsonResponse({'message': 'Input successfully updated.'})

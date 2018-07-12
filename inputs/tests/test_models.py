@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from inputs.models import Input
+from inputs.models import Input, Approval
 from forms.models import Form
 
 
@@ -28,6 +28,11 @@ class InputTestCase(TestCase):
             form=self.form
         )
 
+        self.approval = Approval.objects.create(
+            user=self.user,
+            input=self.input
+        )
+
     def test_create(self):
         self.assertEqual(self.input.status, 'new')
         self.assertEqual(self.input.user.username, 'test')
@@ -44,3 +49,10 @@ class InputTestCase(TestCase):
         self.assertEqual(Input.objects.all().count(), 1)
         self.input.delete()
         self.assertEqual(Input.objects.all().count(), 0)
+
+    def test_create_approval(self):
+        self.assertEqual(self.input.approval_set.count(), 1)
+        self.assertEqual(
+            self.input.user.username,
+            self.input.approval_set.first().user.username
+        )
