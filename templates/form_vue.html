@@ -188,8 +188,8 @@
 	 id: {{input.id}},
 	 step: {{input.step}},
 	 current_dest: {% if input.status == 'routed' %}{{input.current_dest.id}}{% else %}false{% endif %},
-	 route_holder: {{input.route_holder.id}},
-         route_sender: {{input.route_sender.id}},
+	 route_holder: {% if input.route_holder %}{{input.route_holder.id}}{% else %}{{input.user.id}}{% endif %},
+         route_sender: {% if input.route_sender %}{{input.route_sender.id}}{% else %}{{input.user.id}}{% endif %},
 	 routed_date: "{{input.route_date}}",
 	 {% if input.status == 'routed' %}
 	 route: {

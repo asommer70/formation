@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% block title %}Inbox {{input.form.name}}{% endblock %}
+
 {% block body %}
 
   <div class="row">
@@ -21,7 +23,18 @@
 
 	  <br/><hr/>
 
-	  <h4>Routes</h4>
+	  <h4>Routing</h4>
+
+	  <div class="row">
+	    <div class="columns large-4">
+	      <input name="send-to" id="send-to" type="text" placeholder="Send to..." class="inline" />
+	    </div>
+
+	    <div class="columns large-4">
+	      <button type="button" class="button small" title="Send">&#x27A4;</button>
+	      <button type="button" class="button small success float-right" title="Archive">&#9745;</button>
+	    </div>
+	  </div>
 
 	  <ul class="no-bullet">
 	    {% if input.status == 'new' %}

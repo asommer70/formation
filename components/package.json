@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "vendor": "node index.js",
     "sass": "sassc -m auto -t compressed  scss/main.scss ../assets/css/main.css",
+    "sass:ubu": "sassc -m -t compressed  scss/main.scss ../assets/css/main.css",
     "sass:watch": "./sass_watcher.sh"
   },
   "keywords": [
