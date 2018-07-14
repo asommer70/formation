@@ -90,3 +90,35 @@ class RoutingTestCase(TestCase):
         self.assertEqual(res_2.status_code, 200)
         self.assertEqual(json.loads(res_2.content)['status'],
                          'routed')
+
+    def test_ai_add_approval(self):
+        url = reverse('api:input', kwargs={'pk': self.input.pk})
+        request = self.factory.patch(url, {
+            'status': 'routed',
+            'route_holder': self.other_user.id,
+            'route_sender': self.user.id,
+        })
+        force_authenticate(
+            request,
+            user=self.user,
+            token=self.user.auth_token
+        )
+
+        response = views.RetrieveUpdateDestroyInput.as_view()(request,
+                                                              pk=self.input.pk)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['message'],
+                         'Input successfully updated.')
+
+        req_2 = self.factory.get(url)
+        force_authenticate(req_2, user=self.user, token=self.user.auth_token)
+
+        res_2 = views.RetrieveUpdateDestroyInput.as_view()(req_2,
+                                                           pk=self.input.pk)
+        res_2.render()
+
+        self.assertEqual(res_2.status_code, 200)
+        self.assertEqual(json.loads(res_2.content)['status'],
+                         'routed')
+        self.assertEqual(self.input.approval_set.count(), 1)

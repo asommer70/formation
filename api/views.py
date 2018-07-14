@@ -13,7 +13,7 @@ from .serializers import (
     DestinationSerializer
 )
 from forms.models import Form
-from inputs.models import Input
+from inputs.models import Input, Approval, Comment
 from routes.models import Route, Destination
 
 
@@ -51,8 +51,10 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
         input = Input.objects.get(pk=pk)
         input.status = post_data['status']
         input.route_holder = User.objects.get(pk=post_data['route_holder'])
-        input.route_sender = User.objects.get(pk=post_data['route_holder'])
+        input.route_sender = User.objects.get(pk=post_data['route_sender'])
         input.save()
+
+        approval = Approval.objects.create(input=input, user=input.route_sender)
 
         return JsonResponse({'message': 'Input successfully updated.'})
 

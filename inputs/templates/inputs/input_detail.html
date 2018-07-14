@@ -22,19 +22,16 @@
 	  {% endautoescape %}
 
 	  <br/><hr/>
-	  
-	  {% if input.status == 'routed' %}
-	    <h4>Appovals</h4>
+	  <button type="button" class="button success" @click="submitForm">Update</button>
+	  <a href="{% url 'inbox:delete' pk=input.pk %}" class="button tiny alert float-right">Delete</a>
 
-	    <p>...</p>
+	  {% if user == input.route_holder %}
+	    <br/><hr/>
 
-	    <strong>Current Holder: </strong> {{input.route_holder.username}}
-	  {% else %}
 	    <h4>Routing</h4>
 
 	    <div class="row">
 	      <div class="columns large-4">
-		<!-- <input name="send-to" id="send-to" type="text" placeholder="Send to..." class="inline" /> -->
 		<autocomplete
 		  @item-chosen="setUser"
 		  @blur="setUser"
@@ -52,8 +49,31 @@
 	  {% endif %}
 
 	  <br/><hr/>
-	  <button type="button" class="button success" @click="submitForm">Update</button>
-	  <a href="{% url 'inbox:delete' pk=input.pk %}" class="button tiny alert float-right">Delete</a>
+	  
+	  {% if input.status == 'routed' %}
+	    <h4>Appovals</h4>
+
+	    <strong>Current Holder: </strong> {{input.route_holder.username}}
+	    <br/><br/>
+	    
+	    <table>
+	      <thead>
+		<tr>
+		  <th>Username</th>
+		  <th>Approval Date</th>
+		</tr>
+	      </thead>
+	      <tbody>
+		{% for approval in input.approval_set.all %}
+		  <tr>
+		    <td>{{approval.user.username}}</td>
+		    <td>{{approval.created_at|date:"m/d/Y g:i:s"}}</td>
+		  </tr>
+		{% endfor %}
+	      </tbody>
+	    </table>
+	  {% endif %}
+
 	</form>
       </div>
       
