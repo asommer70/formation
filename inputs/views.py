@@ -39,6 +39,11 @@ class InputDetailView(LoginRequiredMixin, InputHolderMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # Add a next_user attribute to the Input.data in order to send the Input to the next user.
+        context['input'].data['next_user'] = ''
+
+        # Used for deciding which user to send the Input to.
         context['users'] = User.objects.all()
         return context
 
