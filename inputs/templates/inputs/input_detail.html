@@ -27,7 +27,14 @@
 
 	  <div class="row">
 	    <div class="columns large-4">
-	      <input name="send-to" id="send-to" type="text" placeholder="Send to..." class="inline" />
+	      <!-- <input name="send-to" id="send-to" type="text" placeholder="Send to..." class="inline" /> -->
+	      <autocomplete
+		@item-chosen="setUser"
+		@blur="setUser"
+		title="Send Form"
+		:items="users"
+		label="username"
+	        class="inline"></autocomplete>
 	    </div>
 
 	    <div class="columns large-4">
@@ -35,20 +42,6 @@
 	      <button type="button" class="button small success float-right" title="Archive">&#9745;</button>
 	    </div>
 	  </div>
-
-	  <ul class="no-bullet">
-	    {% if input.status == 'new' %}
-	      <route v-for="route in routes" :key="route.id" :input-id="input.id" :id="route.id" :dests="route.dests"></route>
-	    {% else %}
-	      <route
-		:input-id="input.id"
-		:id="input.route.id"
-	        :dests="input.route.dests"
-	        :input-current-dest="input.current_dest"
-		:input-current-step="input.step"
-		:route-holder="input.route_holder"></route>
-	    {% endif %}
-	  </ul>
 
 	  <br/><hr/>
 	  <button type="button" class="button success" @click="submitForm">Update</button>

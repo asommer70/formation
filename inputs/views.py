@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -11,6 +12,8 @@ from django.views.generic import (
 )
 from .models import Input
 from .mixins import InputHolderMixin
+
+User = get_user_model()
 
 
 class InputListView(LoginRequiredMixin, ListView):
@@ -33,6 +36,11 @@ class InputCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 class InputDetailView(LoginRequiredMixin, InputHolderMixin, DetailView):
     model = Input
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()
+        return context
 
 
 class InputUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
