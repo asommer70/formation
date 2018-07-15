@@ -1,5 +1,6 @@
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db.models import Q
+from .models import Approval
 
 
 class InputHolderMixin(object):
@@ -19,11 +20,14 @@ class InputHolderMixin(object):
             Q(user=self.request.user) | Q(route_holder=self.request.user)
         )
 
-        # TODO:as allow users who have Approved an Input to view it in the Archive.
-
         try:
             obj = queryset.get()
         except ObjectDoesNotExist:
-            raise PermissionDenied
+            try:
+                # Allow users who have Approved an Input to view it in the Archive.
+                approvals = Approval.objects.filter(input_id=pk)
+                obj = approvals.first().input
+            except AttributeError:
+                raise PermissionDenied
 
         return obj

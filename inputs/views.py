@@ -75,7 +75,6 @@ class ArchiveListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self,  *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['approvals'] = Approval.objects.filter(user=self.request.user)
+        context['approvals'] = Approval.objects.filter(user=self.request.user).order_by('input_id', '-created_at').distinct('input_id')
         return context
-
 
