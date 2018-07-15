@@ -1,0 +1,31 @@
+
+
+<h1>Archive</h1>
+
+<ul class="tabs" data-tabs id="input-tabs">
+  <li class="tabs-title is-active"><a href="#archive" aria-selected="true">My Forms</a></li>
+  <li class="tabs-title"><a href="#approvals">Approvals</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="input-tabs">
+  <div class="tabs-panel is-active" id="archive">
+    <ul>
+      {% for input in inputs %}
+	<li>
+	  <a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - <small>{{input.created_at|date:"m/d/Y f"}}</small>
+	</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="tabs-panel" id="approvals">
+    <ul>
+      {% for approval in approvals %}
+	<li>
+	  <a href="{% url 'inbox:detail' pk=approval.input.pk %}">
+	    {{approval.input.form.name}}
+	  </a> - <small>{{approval.input.created_at|date:"m/d/Y f"}}</small>
+	</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

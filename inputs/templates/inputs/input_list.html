@@ -1,16 +1,23 @@
 {% extends 'layout.html' %}
 
+{% block title %}{% if request.path == '/inbox/archive' %}Archive{% else %}Inbox{% endif %}{% endblock %}
+
 {% block body %}
 
-  <h1>Inbox</h1>
+  {% if request.path == '/inbox/archive' %}
+    {% include 'inputs/archive_list.html' with data=input.data %}
+  {% else %}
+    <h1>Inbox</h1>
+    
+    <ul>
+      {% for input in inputs %}
+	<li>
+	  <a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - <small>{{input.created_at|date:"m/d/Y f"}}</small>
+	</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
-  <ul>
-    {% for input in inputs %}
-      <li>
-	<a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - <small>{{input.created_at|date:"m/d/Y f"}}</small>
-      </li>
-    {% endfor %}
-  </ul>
 
   {% if not inputs %}
     <p>Nothing in the Inbox at this time.</p>

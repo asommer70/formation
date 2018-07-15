@@ -19,6 +19,8 @@ class InputHolderMixin(object):
             Q(user=self.request.user) | Q(route_holder=self.request.user)
         )
 
+        # TODO:as allow users who have Approved an Input to view it in the Archive.
+
         try:
             obj = queryset.get()
         except ObjectDoesNotExist:

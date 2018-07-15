@@ -50,8 +50,14 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
 
         input = Input.objects.get(pk=pk)
         input.status = post_data['status']
-        input.route_holder = User.objects.get(pk=post_data['route_holder'])
-        input.route_sender = User.objects.get(pk=post_data['route_sender'])
+        if (post_data['route_holder'] != ''):
+            input.route_holder = User.objects.get(pk=post_data['route_holder'])
+        else:
+            input.route_holder = None
+        if (post_data['route_sender'] != ''):
+            input.route_sender = User.objects.get(pk=post_data['route_sender'])
+        else:
+            input.route_sender = None
         input.save()
 
         approval = Approval.objects.create(input=input, user=input.route_sender)

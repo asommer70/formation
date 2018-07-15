@@ -10,7 +10,9 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Input
+from itertools import chain
+from operator import attrgetter
+from .models import Input, Approval
 from .mixins import InputHolderMixin
 
 User = get_user_model()
@@ -24,7 +26,7 @@ class InputListView(LoginRequiredMixin, ListView):
     def get_queryset(self, *args, **kwargs):
         qs = super(InputListView, self).get_queryset(*args, **kwargs).filter(
             Q(user=self.request.user) | Q(route_holder=self.request.user)
-        )
+        ).exclude(status='archived')
         return qs
 
 
@@ -58,3 +60,22 @@ class InputDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Input
     success_url = reverse_lazy('inbox:list')
     success_message = "Deletion complete."
+
+
+class ArchiveListView(LoginRequiredMixin, ListView):
+    context_object_name = 'inputs'
+    model = Input
+    paginate_by = 10
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(ArchiveListView, self).get_queryset(*args, **kwargs).filter(
+            Q(user=self.request.user) | Q(status='archived')
+        )
+        return qs
+
+    def get_context_data(self,  *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['approvals'] = Approval.objects.filter(user=self.request.user)
+        return context
+
+
