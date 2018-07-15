@@ -71,7 +71,7 @@ class ArchiveListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, *args, **kwargs):
         qs = super(ArchiveListView, self).get_queryset(*args, **kwargs).filter(
-            Q(user=self.request.user) | Q(status='archived')
+            Q(user=self.request.user), Q(status='archived')
         )
         return qs
 
