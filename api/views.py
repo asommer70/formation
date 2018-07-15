@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
-from django.http import JsonResponse
+from rest_framework.authtoken.models import Token
+from django.http import JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 from .serializers import (
@@ -113,3 +115,20 @@ class RetrieveUpdateDestroyDestination(generics.UpdateAPIView,
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+
+@csrf_exempt
+def add_comment(request, pk):
+    if request.method == 'POST':
+        req_token = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
+        token = Token.objects.get(key=req_token)
+
+        if not token:
+            return HttpResponseRedirect(reverse('inbox'))
+        else:
+            input = Input.objects.get(pk=pk)
+            user = User.objects.get(pk=request.POST['user_id'])
+            comment = Comment.objects.create(input=input, text=request.POST['text'], user=user)
+            return JsonResponse({'message': "Comment has been added."})
+    else: 
+        return HttpResponseRedirect(reverse('album:detail', args=[pk]))

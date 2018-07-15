@@ -17,6 +17,7 @@ urlpatterns = [
         views.RetrieveUpdateDestroyInput.as_view(),
         name="input"
     ),
+    path('inbox/<int:pk>/add_comment', views.add_comment, name='add_comment'),
 
     path('users/', views.ListCreateUser.as_view(), name="users"),
     path('groups/', views.ListCreateGroup.as_view(), name="groups"),

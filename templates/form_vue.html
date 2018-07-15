@@ -168,7 +168,8 @@
 
      routeForm: function(event) {
        console.log('app routeForm... event:', event);
-
+       var self = this;
+       
        $.ajax({
 	 url: '/api/inbox/' + this.input.id,
 	 method: 'patch',
@@ -179,7 +180,7 @@
 	 },
 	 success: function(data) {
 	   console.log('app routeForm patch data:', data);
-	   if (this.input.user == parseInt(userId)) {
+	   if (self.input.user == parseInt(userId)) {
 	     window.location.reload();
 	   } else {
 	     window.location.href = '/inbox';
@@ -189,12 +190,10 @@
      },
 
      archiveForm: function(event) {
-       console.log('app archiveForm... event:', event);
-
        $.ajax({
 	 url: '/api/inbox/' + this.input.id,
 	 method: 'patch',
-	 data: {status: 'archived', route_holder: null, route_sender: null},
+	 data: {status: 'archived', route_holder: null, route_sender: userId},
 	 headers: {
 	   Authorization: 'Token ' + token,
 	   contentType: 'application/json; charset=utf-8'
@@ -205,6 +204,25 @@
 	 }
        });
      },
+
+     createComment: function(event) {
+       $.ajax({
+	 url: '/api/inbox/' + this.input.id + '/add_comment',
+	 method: 'post',
+	 data: {text: this.comment, user_id: userId},
+	 headers: {
+	   Authorization: 'Token ' + token,
+	   contentType: 'application/json; charset=utf-8'
+	 },
+	 success: function(data) {
+	   console.log('app createComment post data:', data);
+           window.location.reload();
+	 },
+	 error: function(err) {
+	   console.log('Error creating comment, err:', err);
+	 }
+       });
+     }
    },
 
    mounted: function() {

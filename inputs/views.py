@@ -42,8 +42,10 @@ class InputDetailView(LoginRequiredMixin, InputHolderMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Add a next_user attribute to the Input.data in order to send the Input to the next user.
+        # Add a next_user attribute to the Input.data in order to send
+        # the Input to the next user, also add a blank comment attribute.
         context['input'].data['next_user'] = ''
+        context['input'].data['comment'] = ''
 
         # Used for deciding which user to send the Input to.
         context['users'] = User.objects.all()
@@ -75,6 +77,10 @@ class ArchiveListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self,  *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['approvals'] = Approval.objects.filter(user=self.request.user).order_by('input_id', '-created_at').distinct('input_id')
+        context['approvals'] = Approval.objects.filter(
+            user=self.request.user
+        ).order_by(
+            'input_id',
+            '-created_at').distinct('input_id')
         return context
 
