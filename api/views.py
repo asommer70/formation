@@ -15,7 +15,7 @@ from .serializers import (
     DestinationSerializer
 )
 from forms.models import Form
-from inputs.models import Input, Approval, Comment
+from inputs.models import Input, Approval, Comment, Attachment
 from routes.models import Route, Destination
 
 
@@ -130,5 +130,21 @@ def add_comment(request, pk):
             user = User.objects.get(pk=request.POST['user_id'])
             comment = Comment.objects.create(input=input, text=request.POST['text'], user=user)
             return JsonResponse({'message': "Comment has been added."})
+    else: 
+        return HttpResponseRedirect(reverse('album:detail', args=[pk]))
+
+@csrf_exempt
+def add_attachment(request, pk):
+    if request.method == 'POST':
+        req_token = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
+        token = Token.objects.get(key=req_token)
+
+        if not token:
+            return HttpResponseRedirect(reverse('inbox'))
+        else:
+            input = Input.objects.get(pk=pk)
+            user = User.objects.get(pk=request.POST['user_id'])
+            attachment = Attachment.objects.create(input=input, upload=request.POST['file'], user=user)
+            return JsonResponse({'message': "Attachment has been added."})
     else: 
         return HttpResponseRedirect(reverse('album:detail', args=[pk]))

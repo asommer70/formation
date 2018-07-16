@@ -78,3 +78,13 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class Attachment(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=None)
+    input = models.ForeignKey(Input, on_delete=models.DO_NOTHING, default=None)
+    upload = models.FileField(blank=True, null=True, upload_to='%Y/%m/')
+
+    class Meta:
+        ordering = ['-created_at']

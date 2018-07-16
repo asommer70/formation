@@ -13,7 +13,7 @@
   </div>
 
   <div class="row">
-    <div class="column large-8 small-12">
+    <div class="column large-12 small-12">
       
       <div class="form-content">
 	
@@ -30,31 +30,51 @@
 
 	  <br/><hr/>
 
-	  <h4>Comments</h4>
+	  <div class="row">
+	    <div class="columns large-8">
+	      <h4>Comments</h4>
 
-	  <table>
-	    <thead>
-	      <tr>
-		<th>Username</th>
-		<th>Comment</th>
-		<th>Date</th>
-	      </tr>
-	    </thead>
-	    <tbody>
-	      {% for comment in input.comment_set.all %}
-		<tr>
-		  <td>{{comment.user.username}}</td>
-		  <td>{{comment.text}}</td>
-		  <td>{{comment.created_at|date:"m/d/Y g:i:s"}}</td>
-		</tr>
-	      {% endfor %}
-	    </tbody>
-	  </table>
-	  
-	  {% if input.status != 'archived' %}
-	    <textarea name="comment" v-model="comment" placeholder="New comment..."></textarea>
-	    <button type="button" class="button small" @click="createComment">Save Comment</button>
-	  {% endif %}
+	      <table>
+		<thead>
+		  <tr>
+		    <th>Username</th>
+		    <th>Comment</th>
+		    <th>Date</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  {% for comment in input.comment_set.all %}
+		    <tr>
+		      <td>{{comment.user.username}}</td>
+		      <td>{{comment.text}}</td>
+		      <td>{{comment.created_at|date:"m/d/Y g:i:s"}}</td>
+		    </tr>
+		  {% endfor %}
+		</tbody>
+	      </table>
+	      
+	      {% if input.status != 'archived' %}
+		<textarea name="comment" v-model="comment" placeholder="New comment..."></textarea>
+		<button type="button" class="button small" @click="createComment">Save Comment</button>
+	      {% endif %}
+	    </div>
+
+	    <div class="columns large-4">
+	      <h4>Attachments</h4>
+
+	      <ul>
+		{% for attachment in input.attachment_set.all %}
+		  <li>{{attachment.upload.url}}</li>
+		{% endfor %}
+	      </ul>
+
+	      {% if input.status != 'archived' %}
+		<input name="file" type="file" @change="filesChange" />
+
+		<button type="button" class="button small" @click="addAttachment">Add Attachment</button>
+	      {% endif %}
+	    </div>
+	  </div>
 
 	  {% if user == input.route_holder or input.status == 'new' %}
 	    <br/><hr/>
@@ -110,6 +130,7 @@
       
     </div>
   </div>
+  <br/><br/>
 
 {% endblock %}
 

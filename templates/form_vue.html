@@ -222,6 +222,38 @@
 	   console.log('Error creating comment, err:', err);
 	 }
        });
+     },
+
+     addAttachment: function(event) {
+       console.log('Adding attachment... event.target.value:', event.target.value);
+       console.log('this.attachment:', this.attachment.getAll('file'), 'this.attachment.getAll(user_id):', this.attachment.getAll('user_id'));
+
+       $.ajax({
+	 url: '/api/inbox/' + this.input.id + '/add_attachment',
+	 method: 'post',
+	 data: this.attachment,
+	 headers: {
+	   Authorization: 'Token ' + token,
+	 },
+	 success: function(data) {
+	   console.log('app addAttachment post data:', data);
+           window.location.reload();
+	 },
+	 error: function(err) {
+	   console.log('Error creating attachment, err:', err);
+	 }
+       });
+     },
+
+     filesChange: function(event) {
+       console.log('fileChange event:', event.target.name);
+       console.log('event.target.files:', event.target.files[0]);
+       var attachmentData = new FormData();
+
+       attachmentData.append(event.target.name, event.target.files[0], event.target.files[0].name);
+       console.log('attachmentData:', attachmentData);
+       attachmentData.append('user_id', userId);
+       this.attachment = attachmentData;
      }
    },
 
