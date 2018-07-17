@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect
 from django.db.models import Q
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
     DetailView,
@@ -12,7 +14,7 @@ from django.views.generic import (
 )
 from itertools import chain
 from operator import attrgetter
-from .models import Input, Approval
+from .models import Input, Approval, Attachment
 from .mixins import InputHolderMixin
 
 User = get_user_model()
@@ -84,4 +86,15 @@ class ArchiveListView(LoginRequiredMixin, ListView):
             'input_id',
             '-created_at').distinct('input_id')
         return context
+    
 
+@login_required()
+def add_attachment(request, pk):
+    if request.method == 'POST':
+        print('request.POST:', request.POST)
+        input = Input.objects.get(pk=pk)
+        user = User.objects.get(pk=request.POST['user_id'])
+        attachment = Attachment.objects.create(input=input, upload=request.FILES['file'], user=user)
+        return HttpResponseRedirect(reverse('inbox:detail', args=[pk]))
+    else: 
+        return HttpResponseRedirect(reverse('inbox:detail', args=[pk]))

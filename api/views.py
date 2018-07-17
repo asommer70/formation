@@ -3,6 +3,7 @@ from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -133,7 +134,6 @@ def add_comment(request, pk):
     else: 
         return HttpResponseRedirect(reverse('album:detail', args=[pk]))
 
-@csrf_exempt
 def add_attachment(request, pk):
     if request.method == 'POST':
         req_token = request.META['HTTP_AUTHORIZATION'].split(" ")[1]

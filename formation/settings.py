@@ -161,3 +161,7 @@ REST_FRAMEWORK = {
         'user': '50/minute'
     }
 }
+
+# Where media files are uploaded.
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/media/'

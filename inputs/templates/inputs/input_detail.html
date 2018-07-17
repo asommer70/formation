@@ -58,20 +58,25 @@
 		<button type="button" class="button small" @click="createComment">Save Comment</button>
 	      {% endif %}
 	    </div>
+	</form>
 
 	    <div class="columns large-4">
 	      <h4>Attachments</h4>
 
 	      <ul>
 		{% for attachment in input.attachment_set.all %}
-		  <li>{{attachment.upload.url}}</li>
+		  <li><a href="{{attachment.upload.url}}">{{attachment.upload.name}}</a></li>
 		{% endfor %}
 	      </ul>
-
+	      
 	      {% if input.status != 'archived' %}
-		<input name="file" type="file" @change="filesChange" />
-
-		<button type="button" class="button small" @click="addAttachment">Add Attachment</button>
+		<form action="{% url 'inbox:add_attachment' pk=input.pk %}" method="post" enctype="multipart/form-data">
+		  <input name="file" id="file" type="file" />
+		  {% csrf_token %}
+		  <input type="hidden" name="user_id" value="{{user.id}}" />
+		  
+		  <button type="submit" class="button small">Add Attachment</button>
+		</form>
 	      {% endif %}
 	    </div>
 	  </div>
@@ -125,7 +130,6 @@
 	    </table>
 	  {% endif %}
 
-	</form>
       </div>
       
     </div>
