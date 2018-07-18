@@ -134,17 +134,3 @@ def add_comment(request, pk):
     else: 
         return HttpResponseRedirect(reverse('album:detail', args=[pk]))
 
-def add_attachment(request, pk):
-    if request.method == 'POST':
-        req_token = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
-        token = Token.objects.get(key=req_token)
-
-        if not token:
-            return HttpResponseRedirect(reverse('inbox'))
-        else:
-            input = Input.objects.get(pk=pk)
-            user = User.objects.get(pk=request.POST['user_id'])
-            attachment = Attachment.objects.create(input=input, upload=request.POST['file'], user=user)
-            return JsonResponse({'message': "Attachment has been added."})
-    else: 
-        return HttpResponseRedirect(reverse('album:detail', args=[pk]))

@@ -65,7 +65,7 @@
 
 	      <ul>
 		{% for attachment in input.attachment_set.all %}
-		  <li><a href="{{attachment.upload.url}}">{{attachment.upload.name}}</a></li>
+		  <li><a target="_blank" href="{{attachment.upload.url}}">{{attachment.upload.name}}</a></li>
 		{% endfor %}
 	      </ul>
 	      

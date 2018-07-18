@@ -37,6 +37,14 @@ class InputCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Input
     success_url = reverse_lazy('inbox')
 
+    def post(self, request):
+        print('request.POST:', request.POST)
+        print('request.FILES:', request.FILES)
+        # for f in files:
+        #     Attachment.objects.create(user=request.user, upload=f)
+        # return self.form_valid(form)
+        return True
+
 
 class InputDetailView(LoginRequiredMixin, InputHolderMixin, DetailView):
     model = Input

@@ -150,7 +150,29 @@
 	 success: function(data) {
 	   console.log('post data:', data);
 	   localStorage.setItem('form_' + self.pathParts[self.pathParts.length - 1], null);
-	   window.location.href = '/inbox/' + data.id;
+
+	   // Create the comment if the comment field isn't blank.
+	   if ($('#comment').val().length) {
+	     $.ajax({
+	       url: '/api/inbox/' + data.id + '/add_comment',
+	       method: 'post',
+	       data: {text: $('#comment').val(), user_id: userId},
+	       headers: {
+		 Authorization: 'Token ' + token,
+		 contentType: 'application/json; charset=utf-8'
+	       },
+	       success: function(commentData) {
+		 console.log('app createComment post data:', commentData);
+		 self.addCreationAttachment(data.id);
+	       },
+	       error: function(err) {
+		 console.log('Error creating comment, err:', err);
+	       }
+	     });
+	   } else {
+	     // If attachment is set set the attachment form action attribute and submit the form.
+	     self.addCreationAttachment(data.id);
+	   }
 	 }
        });
      },
@@ -243,6 +265,17 @@
 	   console.log('Error creating attachment, err:', err);
 	 }
        });
+     },
+
+     addCreationAttachment: function(id) {
+       if ($('#attachment-file').val().length) {
+	 $form = $('#attachment-form');
+	 $form.attr('action', '/inbox/' + id + '/add_attachment');
+	 console.log('$form:', $form);
+	 $form.submit();
+       } else {
+	 window.location.href = '/inbox/' + id;
+       }
      },
 
      filesChange: function(event) {
