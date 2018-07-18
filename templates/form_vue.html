@@ -72,16 +72,6 @@
        // Emit event to disable the other option.
        this.$emit('item-chosen', item);
      }
-   },
-
-   created: function() {
-     /* if (this.destitem) {
-      *   if (this.destitem.hasOwnProperty('username')) {
-	this.filteredItem = this.destitem.username;
-      *   } else if (this.destitem.hasOwnProperty('name')) {
-	this.filteredItem = this.destitem.name;
-      *   }
-      * } */
    }
  });
  
@@ -163,7 +153,26 @@
 	       },
 	       success: function(commentData) {
 		 console.log('app createComment post data:', commentData);
-		 self.addCreationAttachment(data.id);
+
+		 // Send the new Input to the next_user. 
+		 if (self.next_user !== '') {
+		   $.ajax({
+		     url: '/api/inbox/' + data.id,
+		     method: 'patch',
+		     data: {status: 'routed', route_holder: self.next_user.id, route_sender: userId},
+		     headers: {
+		       Authorization: 'Token ' + token,
+		       contentType: 'application/json; charset=utf-8'
+		     },
+		     success: function(sendData) {
+		       console.log('app submitForm send patch data:', sendData);
+		       self.addCreationAttachment(data.id);
+		     }
+		   });
+		 } else {
+		   // Create attachemnt.
+		     self.addCreationAttachment(data.id);
+		 }
 	       },
 	       error: function(err) {
 		 console.log('Error creating comment, err:', err);
@@ -185,6 +194,7 @@
 
      setUser: function(item) {
        // Save the user for later routing.
+       console.log('setUser item:', item);
        this.next_user = item;
      },
 

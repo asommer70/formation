@@ -72,8 +72,8 @@ class Approval(models.Model):
 
 class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=None)
-    input = models.ForeignKey(Input, on_delete=models.DO_NOTHING, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    input = models.ForeignKey(Input, on_delete=models.CASCADE, default=None)
     text = models.CharField(max_length=2048)
 
     class Meta:
@@ -82,8 +82,8 @@ class Comment(models.Model):
 
 class Attachment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=None)
-    input = models.ForeignKey(Input, on_delete=models.DO_NOTHING, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    input = models.ForeignKey(Input, on_delete=models.CASCADE, default=None)
     upload = models.FileField(blank=True, null=True, upload_to='%Y/%m/')
 
     class Meta:

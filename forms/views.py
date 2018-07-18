@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -10,6 +11,8 @@ from django.views.generic import (
 )
 from .models import Form
 
+User = get_user_model()
+
 
 class FormListView(LoginRequiredMixin, ListView):
     context_object_name = 'forms'
@@ -19,6 +22,14 @@ class FormListView(LoginRequiredMixin, ListView):
 
 class FormDetailView(LoginRequiredMixin, DetailView):
     model = Form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'].fields['next_user'] = ''
+
+        # Used for deciding which user to send the Input to.
+        context['users'] = User.objects.all()
+        return context
 
 
 class FormCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
