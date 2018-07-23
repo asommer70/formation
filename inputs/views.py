@@ -49,6 +49,7 @@ class InputDetailView(LoginRequiredMixin, InputHolderMixin, DetailView):
         context['input'].data['next_user'] = ''
         context['input'].data['comment'] = ''
         context['input'].data['attachment'] = ''
+        # context['input'].data['dyns'] = ''
 
         # Used for deciding which user to send the Input to.
         context['users'] = User.objects.all()
