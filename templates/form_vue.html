@@ -155,24 +155,24 @@
 		 console.log('app createComment post data:', commentData);
 
 		 // Send the new Input to the next_user. 
-		 if (self.next_user !== '') {
-		   $.ajax({
-		     url: '/api/inbox/' + data.id,
-		     method: 'patch',
-		     data: {status: 'routed', route_holder: self.next_user.id, route_sender: userId},
-		     headers: {
-		       Authorization: 'Token ' + token,
-		       contentType: 'application/json; charset=utf-8'
-		     },
-		     success: function(sendData) {
-		       console.log('app submitForm send patch data:', sendData);
+		   if (self.next_user !== '') {
+		     $.ajax({
+		       url: '/api/inbox/' + data.id,
+		       method: 'patch',
+		       data: {status: 'routed', route_holder: self.next_user.id, route_sender: userId},
+		       headers: {
+			 Authorization: 'Token ' + token,
+			 contentType: 'application/json; charset=utf-8'
+		       },
+		       success: function(sendData) {
+			 console.log('app submitForm send patch data:', sendData);
+			 self.addCreationAttachment(data.id);
+		       }
+		     });
+		   } else {
+		     // Create attachemnt.
 		       self.addCreationAttachment(data.id);
-		     }
-		   });
-		 } else {
-		   // Create attachemnt.
-		     self.addCreationAttachment(data.id);
-		 }
+		   }
 	       },
 	       error: function(err) {
 		 console.log('Error creating comment, err:', err);
@@ -281,7 +281,6 @@
        if ($('#attachment-file').val().length) {
 	 $form = $('#attachment-form');
 	 $form.attr('action', '/inbox/' + id + '/add_attachment');
-	 console.log('$form:', $form);
 	 $form.submit();
        } else {
 	 window.location.href = '/inbox/' + id;
@@ -300,8 +299,27 @@
      },
 
      addRow: function(event) {
-       console.log('addRow event.taget:', event.target);
-       
+       // Find the table, tr elements, number of rows in the table,
+       // and clone the last row.
+       var $table = $('#' + $(event.target).data('dyn'));
+       var trs = $table.find('tr');
+       var rowNum = trs.length - 1;
+       var $newRow = $(trs[trs.length - 1]).clone();
+
+       // Change the name of the new row's inputs and append it to the table.
+       this.renameInputs($newRow.find('input'), rowNum);
+       $table.append($newRow);
+     },
+
+     renameInputs: function(inputs, rowNum) {
+       $.each(inputs, function(idx, input) {
+	 var $input = $(input);
+	 var nameParts = $input.attr('name').split('_');
+	 nameParts.pop();
+	 nameParts.push(rowNum + 1);
+	 var newName = nameParts.join('_');
+	 $input.attr('name', newName);
+       });
      }
    },
 
