@@ -317,8 +317,6 @@
      renameInputs: function(inputs, rowNum) {
        var self = this;
        $.each(inputs, function(idx, input) {
-	 // Vue.set(newName, '');
-	 self[newName] = '';
 	 var $input = $(input);
 	 $input.val('');
 	 $input.attr('v-model', newName);
@@ -328,6 +326,9 @@
 	 nameParts.push(rowNum + 1);
 	 
 	 var newName = nameParts.join('_');
+	 // $input.attr('v-model', newName);
+	 Vue.set(self, newName, self[newName]);
+	 $input.val(self[newName]);
 	 $input.attr('name', newName);
        });
      }
@@ -352,10 +353,11 @@
      console.log('this.dyns:', this.dyns.length);
      if (Object.keys(this.dyns).length) {
        for (var key in this.dyns) {
-	 var $button = $('[data-dyn="' + key + '"]');
-	 console.log('$button:', $button);
-	 for (var i = 0; i < this.dyns[key]['rowNum']; i++) {
-	   $button.click();
+	 var $button = $('[data-dyn="' + key + '"]');	 
+	 for (var i = 0; i < parseInt(this.dyns[key]['rowNum']); i++) {
+	   console.log('i:', i);
+	   // Add a small pause to add the new row before clicking again.
+	   setTimeout(function() {$button.click()}, 20);
 	 }
        }
      }
