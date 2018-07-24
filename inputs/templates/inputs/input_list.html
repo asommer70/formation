@@ -8,14 +8,28 @@
     {% include 'inputs/archive_list.html' with data=input.data %}
   {% else %}
     <h1>Inbox</h1>
-    
-    <ul>
+
+    <div class="row">
       {% for input in inputs %}
-	<li>
-	  <a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - <small>{{input.created_at|date:"m/d/Y f"}}</small>
-	</li>
+	<div class="columns large-4 small-12">
+	  <div class="card" style="width: 300px;">
+	    <div class="card-divider">
+	      <h4><a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a></h4>
+	    </div>
+
+	    <div class="card-section">
+	      {% if input.form.image %}
+		<a href="{% url 'inbox:detail' pk=input.pk %}">
+		  <img src="{{input.form.image.url}}" alt="{{input.form.name}}" class="form-image" />
+		</a>
+		<br/><br/>
+		<small>{{input.created_at|date:"m/d/Y f"}}</small>
+	      {% endif %}
+	    </div>
+	  </div>
+	</div>
       {% endfor %}
-    </ul>
+    </div>
   {% endif %}
 
 

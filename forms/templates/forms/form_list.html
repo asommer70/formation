@@ -10,8 +10,8 @@
 
   <div class="row">
     {% for form in forms %}
-      <div class="columns">
-
+      
+      <div class="columns large-4 small-12">
 	<div class="card" style="width: 300px;">
 	  <div class="card-divider">
 	    <h4><a href="{% url 'forms:detail' pk=form.pk %}">{{form.name}}</a></h4>
