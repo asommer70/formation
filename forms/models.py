@@ -16,6 +16,7 @@ class Form(models.Model):
     content = models.TextField(max_length=20000, blank=True, null=True)
     fields = JSONField(blank=True, null=True)
     public = models.BooleanField(default=False)
+    image = models.ImageField(blank=True, null=True, upload_to='form_images')
 
     class Meta:
         ordering = ['-created_at']

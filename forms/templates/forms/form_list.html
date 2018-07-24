@@ -8,10 +8,25 @@
 
   <a href="{% url 'forms:create' %}" class="button small">New Form</a>
 
-  <ul>
+  <div class="row">
     {% for form in forms %}
-      <li><a href="{% url 'forms:detail' pk=form.pk %}">{{form.name}}</a></li>
-    {% endfor %}
-  </ul>
+      <div class="columns">
 
+	<div class="card" style="width: 300px;">
+	  <div class="card-divider">
+	    <h4><a href="{% url 'forms:detail' pk=form.pk %}">{{form.name}}</a></h4>
+	  </div>
+
+	  <div class="card-section">
+	    {% if form.image %}
+	      <a href="{% url 'forms:detail' pk=form.pk %}">
+		<img src="{{form.image.url}}" alt="{{form.name}}" class="form-image" />
+	      </a>
+	    {% endif %}
+	  </div>
+	</div>
+      </div>
+      
+    {% endfor %}
+  </div>
 {% endblock %}

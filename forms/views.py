@@ -34,14 +34,14 @@ class FormDetailView(LoginRequiredMixin, DetailView):
 
 
 class FormCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    fields = ['name', 'content', 'public']
+    fields = ['name', 'content', 'image']
     model = Form
     success_url = reverse_lazy('forms:list')
     success_message = "Form created."
 
 
 class FormUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    fields = ['name', 'content', 'public']
+    fields = ['name', 'content', 'image']
     model = Form
     success_message = "Form updated."
 
