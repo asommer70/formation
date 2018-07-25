@@ -18,6 +18,7 @@ from .serializers import (
 from forms.models import Form
 from inputs.models import Input, Approval, Comment
 from routes.models import Route, Destination
+from inputs.emails import inbox_notification, route_notification
 
 
 class ListCreateForm(generics.ListCreateAPIView):
@@ -49,8 +50,6 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
         else:
             post_data = json.loads(request.body)
 
-        print('post_data:', post_data)
-
         input = Input.objects.get(pk=pk)
         input.status = post_data['status']
         if (post_data['route_holder'] != ''):
@@ -62,6 +61,15 @@ class RetrieveUpdateDestroyInput(generics.RetrieveUpdateDestroyAPIView):
         else:
             input.route_sender = None
         input.save()
+
+        
+        # Send email to new route_holder.
+        if input.status != 'archived':
+            inbox_notification(input)
+            
+        # Inform the Input creator.
+        if (self.request.user != input.user):
+            route_notification(input)
 
         approval = Approval.objects.create(input=input, user=input.route_sender)
 

@@ -23,7 +23,12 @@
 		  <img src="{{input.form.image.url}}" alt="{{input.form.name}}" class="form-image" />
 		</a>
 		<br/><br/>
-		<small>{{input.created_at|date:"m/d/Y f"}}</small>
+		<small><strong>Created at:</strong> {{input.created_at|date:"m/d/Y f"}}</small>
+		<br/>
+		<small>
+		  <strong>Route Holder:</strong>
+		  {% if input.route_holder %}{{input.route_holder.username}}{% else %}Me{% endif %}
+		</small>
 	      {% endif %}
 	    </div>
 	  </div>
