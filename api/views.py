@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from django.http import JsonResponse, HttpResponseRedirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -16,7 +16,7 @@ from .serializers import (
     DestinationSerializer
 )
 from forms.models import Form
-from inputs.models import Input, Approval, Comment, Attachment
+from inputs.models import Input, Approval, Comment
 from routes.models import Route, Destination
 
 

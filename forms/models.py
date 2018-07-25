@@ -4,10 +4,15 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.db.models.signals import post_save
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
+from django.utils import timezone
 from rest_framework.authtoken.models import Token
+import logging
+
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 class Form(models.Model):
@@ -63,6 +68,12 @@ class Form(models.Model):
 
         self.fields = fields
         self.content = soup.prettify()
+
+        print('args:', args, 'kwargs:', kwargs)
+        logger.warning('{} | Form: "{}" updated/created'.format(
+            timezone.now(),
+            self.name
+        ))
         super(Form, self).save(*args, **kwargs)
 
 
@@ -70,3 +81,20 @@ class Form(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+def log_logins(sender, user, request, **kwargs):
+    logger.warning('{} | User: "{}" logged in'.format(
+        timezone.now(),
+        user.username
+    ))
+
+
+def log_logouts(sender, user, request, **kwargs):
+    logger.warning('{} | User: "{}" logged out'.format(
+        timezone.now(),
+        user.username
+    ))
+
+user_logged_in.connect(log_logins)
+user_logged_out.connect(log_logouts)

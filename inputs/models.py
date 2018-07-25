@@ -1,11 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.utils import timezone
 from forms.models import Form
 from routes.models import Route, Destination
+import logging
 
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 class Input(models.Model):
@@ -59,6 +62,14 @@ class Input(models.Model):
 
     def __str__(self):
         return self.user.username + ": " + self.status
+
+    def save(self, *args, **kwargs):
+        logger.warning('{} | Input: "{}" updated/created by: {}'.format(
+            timezone.now(),
+            self.form.name,
+            self.user.username
+        ))
+        super(Input, self).save(*args, **kwargs)
 
 
 class Approval(models.Model):

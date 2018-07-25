@@ -14,7 +14,6 @@ class InputHolderMixin(object):
             queryset = self.get_queryset()
 
         pk = self.kwargs.get(self.pk_url_kwarg, None)
-        print('get_object pk:', pk)
         queryset = queryset.filter(
             Q(pk=pk),
             Q(user=self.request.user) | Q(route_holder=self.request.user)
@@ -24,7 +23,8 @@ class InputHolderMixin(object):
             obj = queryset.get()
         except ObjectDoesNotExist:
             try:
-                # Allow users who have Approved an Input to view it in the Archive.
+                # Allow users who have Approved an Input to view
+                # it in the Archive.
                 approvals = Approval.objects.filter(input_id=pk)
                 obj = approvals.first().input
             except AttributeError:

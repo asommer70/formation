@@ -54,31 +54,31 @@
 	      </table>
 	      
 	      {% if input.status != 'archived' %}
-		<textarea name="comment" v-model="comment" placeholder="New comment..."></textarea>
+		<textarea id="comment" name="comment" v-model="comment" placeholder="New comment..."></textarea>
 		<button type="button" class="button small" @click="createComment">Save Comment</button>
 	      {% endif %}
 	    </div>
 	</form>
 
-	    <div class="columns large-4">
-	      <h4>Attachments</h4>
+	<div class="columns large-4">
+	  <h4>Attachments</h4>
 
-	      <ul>
-		{% for attachment in input.attachment_set.all %}
-		  <li><a target="_blank" href="{{attachment.upload.url}}">{{attachment.upload.name}}</a></li>
-		{% endfor %}
-	      </ul>
+	  <ul>
+	    {% for attachment in input.attachment_set.all %}
+	      <li><a target="_blank" href="{{attachment.upload.url}}">{{attachment.upload.name}}</a></li>
+	    {% endfor %}
+	  </ul>
+	  
+	  {% if input.status != 'archived' %}
+	    <form action="{% url 'inbox:add_attachment' pk=input.pk %}" method="post" enctype="multipart/form-data">
+	      <input id="attachment-file" name="file" id="file" type="file" />
+	      {% csrf_token %}
+	      <input type="hidden" name="user_id" value="{{user.id}}" />
 	      
-	      {% if input.status != 'archived' %}
-		<form action="{% url 'inbox:add_attachment' pk=input.pk %}" method="post" enctype="multipart/form-data">
-		  <input name="file" id="file" type="file" />
-		  {% csrf_token %}
-		  <input type="hidden" name="user_id" value="{{user.id}}" />
-		  
-		  <button type="submit" class="button small">Add Attachment</button>
-		</form>
-	      {% endif %}
-	    </div>
+	      <button type="submit" class="button small">Add Attachment</button>
+	    </form>
+	  {% endif %}
+	</div>
 	  </div>
 
 	  {% if user == input.route_holder or input.status == 'new' %}
