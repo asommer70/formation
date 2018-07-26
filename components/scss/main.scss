@@ -2,13 +2,40 @@
 @import 'settings';
 @import 'includes';
 
-.form-content {
-    padding: 10px;
-    border: solid 1px black;
+// colors
+// $dark-blue: #014955;
+// $light-blue: #1687a7;
+// $sky-blue: #35d0ba;
+// $gray: #e4d1d3;
+// $light-gray: #edf0c7;
+// $red: #dd0a35;
+// $orange: #ff5c00;
+// $light-orange: #f8c43a;
+// $maroon: #c93d1b;
+// $black: #04322e;
+// $light-green: #4e9525;
+// $green: #2e5a1c;
+
+body {
+    background-color: #93ac9d;
 }
 
+.form-content {
+    padding: 10px;
+    border: solid 1px $black;
+}
+
+.form-inner {
+    background-color: white;
+    padding: 20px;
+}
+
+.form-buttons, .form-comments, .form-attachments, .form-routing, .form-approvals {
+    background-color: white;
+}
+
+
 .route-dest-card {
-    // border: 1px solid  map-get($foundation-palette, secondary);
     width: 15em;
     float: left;
     margin-left: 1em;

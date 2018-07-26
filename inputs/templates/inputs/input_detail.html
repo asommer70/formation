@@ -3,135 +3,147 @@
 {% block title %}Inbox {{input.form.name}}{% endblock %}
 
 {% block body %}
-
-  <div class="row">
-    <div class="column small-12 large-10">
-      <h1>{{input.form.name}}</h1>
-      <small>Created: {{input.created_at|date:"m/d/Y g:i:s"}} by: {{input.user.username}}</small>
-      <br/><br/>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="column large-12 small-12">
-      
-      <div class="form-content">
-	
-	<form method="post" action="{% url 'inbox:create' %}" id="input-form" name="{{input.form.id}}">
-	  {% autoescape off %}
-	    {{input.form.content}}
-	  {% endautoescape %}
-
-	  {% if input.status != 'archived' %}
-	    <br/><hr/>
-	    <button type="button" class="button success" @click="submitForm">Update</button>
-	    <a href="{% url 'inbox:delete' pk=input.pk %}" class="button tiny alert float-right">Delete</a>
-	  {% endif %}
-
-	  <br/><hr/>
-
-	  <div class="row">
-	    <div class="columns large-8">
-	      <h4>Comments</h4>
-
-	      <table>
-		<thead>
-		  <tr>
-		    <th>Username</th>
-		    <th>Comment</th>
-		    <th>Date</th>
-		  </tr>
-		</thead>
-		<tbody>
-		  {% for comment in input.comment_set.all %}
-		    <tr>
-		      <td>{{comment.user.username}}</td>
-		      <td>{{comment.text}}</td>
-		      <td>{{comment.created_at|date:"m/d/Y g:i:s"}}</td>
-		    </tr>
-		  {% endfor %}
-		</tbody>
-	      </table>
-	      
-	      {% if input.status != 'archived' %}
-		<textarea id="comment" name="comment" v-model="comment" placeholder="New comment..."></textarea>
-		<button type="button" class="button small" @click="createComment">Save Comment</button>
-	      {% endif %}
-	    </div>
-	</form>
-
-	<div class="columns large-4">
-	  <h4>Attachments</h4>
-
-	  <ul>
-	    {% for attachment in input.attachment_set.all %}
-	      <li><a target="_blank" href="{{attachment.upload.url}}">{{attachment.upload.name}}</a></li>
-	    {% endfor %}
-	  </ul>
+  <div id="vue-app">
+    
+    <div class="row">
+      <div class="columns large-12 small-12 form-content">
 	  
-	  {% if input.status != 'archived' %}
-	    <form action="{% url 'inbox:add_attachment' pk=input.pk %}" method="post" enctype="multipart/form-data">
-	      <input id="attachment-file" name="file" id="file" type="file" />
-	      {% csrf_token %}
-	      <input type="hidden" name="user_id" value="{{user.id}}" />
+	  <form method="post" action="{% url 'inbox:create' %}" id="input-form" name="{{input.form.id}}">
+	    <div class="form-inner">
+	      <div class="row">
+		<div class="column small-12 large-10">
+		  <h1>{{input.form.name}}</h1>
+		  <small>Created: {{input.created_at|date:"m/d/Y g:i:s"}} by: {{input.user.username}}</small>
+		  <br/><hr/>
+		</div>
+	      </div>
 	      
-	      <button type="submit" class="button small">Add Attachment</button>
-	    </form>
-	  {% endif %}
-	</div>
-	  </div>
-
-	  {% if user == input.route_holder or input.status == 'new' %}
-	    <br/><hr/>
-
-	    <h4>Routing</h4>
-
-	    <div class="row">
-	      <div class="columns large-4">
-		<autocomplete
-		  @item-chosen="setUser"
-		  @blur="setUser"
-		  title="Send Form"
-		  :items="users"
-		  label="username"
-		  class="inline"></autocomplete>
-	      </div>
-
-	      <div class="columns large-4">
-		<button type="button" class="button small" title="Send" @click="routeForm">&#x27A4;</button>
-		<button type="button" class="button small success float-right" title="Archive" @click="archiveForm">&#9745;</button>
-	      </div>
+	      {% autoescape off %}
+		{{input.form.content}}
+	      {% endautoescape %}
 	    </div>
-	  {% endif %}
-
-	  <br/><hr/>
-	  
-	  {% if input.status == 'routed' or input.status == 'archived' %}
-	    <h4>Appovals</h4>
-
-	    <strong>Current Holder: </strong> {{input.route_holder.username}}
-	    <br/><br/>
-	    
-	    <table>
-	      <thead>
-		<tr>
-		  <th>Username</th>
-		  <th>Approval Date</th>
-		</tr>
-	      </thead>
-	      <tbody>
-		{% for approval in input.approval_set.all %}
-		  <tr>
-		    <td>{{approval.user.username}}</td>
-		    <td>{{approval.created_at|date:"m/d/Y g:i:s"}}</td>
-		  </tr>
-		{% endfor %}
-	      </tbody>
-	    </table>
-	  {% endif %}
+	  </form>
 
       </div>
-      
+    </div>
+
+    <div class="row">
+      <div class="columns large-12 form-buttons">
+	{% if input.status != 'archived' %}
+	  <br/>
+	  <button type="button" class="button success" @click="submitForm">Update</button>
+	  <a href="{% url 'inbox:delete' pk=input.pk %}" class="button tiny alert float-right">Delete</a>
+	{% endif %}
+
+	<br/><hr/>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="columns large-8 form-comments">
+	<h4>Comments</h4>
+
+	<table>
+	  <thead>
+	    <tr>
+	      <th>Username</th>
+	      <th>Comment</th>
+	      <th>Date</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    {% for comment in input.comment_set.all %}
+	      <tr>
+		<td>{{comment.user.username}}</td>
+		<td>{{comment.text}}</td>
+		<td>{{comment.created_at|date:"m/d/Y g:i:s"}}</td>
+	      </tr>
+	    {% endfor %}
+	  </tbody>
+	</table>
+	
+	{% if input.status != 'archived' %}
+	  <textarea id="comment" name="comment" v-model="comment" placeholder="New comment..."></textarea>
+	  <button type="button" class="button small" @click="createComment">Save Comment</button>
+	{% endif %}
+      </div>
+
+      <div class="columns large-4 form-attachments">
+	<h4>Attachments</h4>
+
+	<ul>
+	  {% for attachment in input.attachment_set.all %}
+	    <li><a target="_blank" href="{{attachment.upload.url}}">{{attachment.upload.name}}</a></li>
+	  {% endfor %}
+	</ul>
+	
+	{% if input.status != 'archived' %}
+	  <form action="{% url 'inbox:add_attachment' pk=input.pk %}" method="post" enctype="multipart/form-data">
+	    <input id="attachment-file" name="file" id="file" type="file" />
+	    {% csrf_token %}
+	    <input type="hidden" name="user_id" value="{{user.id}}" />
+	    
+	    <button type="submit" class="button small">Add Attachment</button>
+	  </form>
+	{% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="columns large-12 form-routing">
+	{% if user == input.route_holder or input.status == 'new' %}
+	  <br/><hr/>
+
+	  <h4>Routing</h4>
+
+	  <div class="row">
+	    <div class="columns large-4">
+	      <autocomplete
+		@item-chosen="setUser"
+		@blur="setUser"
+		title="Send Form"
+		:items="users"
+		label="username"
+		class="inline"></autocomplete>
+	    </div>
+
+	    <div class="columns large-4">
+	      <button type="button" class="button small" title="Send" @click="routeForm">&#x27A4;</button>
+	      <button type="button" class="button small success float-right" title="Archive" @click="archiveForm">&#9745;</button>
+	    </div>
+	  </div>
+	{% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="columns large-12 form-approvals">
+	<br/><hr/>
+	
+	{% if input.status == 'routed' or input.status == 'archived' %}
+	  <h4>Appovals</h4>
+
+	  <strong>Current Holder: </strong> {{input.route_holder.username}}
+	  <br/><br/>
+	  
+	  <table>
+	    <thead>
+	      <tr>
+		<th>Username</th>
+		<th>Approval Date</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for approval in input.approval_set.all %}
+		<tr>
+		  <td>{{approval.user.username}}</td>
+		  <td>{{approval.created_at|date:"m/d/Y g:i:s"}}</td>
+		</tr>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	{% endif %}
+      </div>
     </div>
   </div>
   <br/><br/>

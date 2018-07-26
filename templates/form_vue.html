@@ -42,19 +42,19 @@
      <div>
        <input type="text" 
 	      v-model="item" 
-       :name="name" 
-       @keydown="filterItems" 
+              :name="name" 
+              @keydown="filterItems" 
               data-toggle="send-to-user-dropdown"
               id="send-to-user"
 	      autocomplete="off" 
-       :placeholder="title" />
-     <div class="dropdown-pane" id="send-to-user-dropdown" data-dropdown>
+              :placeholder="title" />
+       <div class="dropdown-pane" id="send-to-user-dropdown" data-dropdown>
 	 <ul class="no-bullet">
 	   <li v-for="item in filteredItems" @click="setItem(item)">
 	     <% item[label] %>
 	   </li>
 	 </ul>
-     </div>
+       </div>
      </div>
    `,
 
@@ -76,7 +76,7 @@
  });
  
  var app = new Vue({
-   el: '.form-content',     
+   el: '#vue-app',     
    data: {% autoescape off %}{{data}}{% endautoescape %},
 
    computed: {
@@ -351,7 +351,6 @@
      });
 
      // Click the button for each dynamic form.
-     console.log('this.dyns:', this.dyns.length);
      if (Object.keys(this.dyns).length) {
        for (var key in this.dyns) {
 	 var $button = $('[data-dyn="' + key + '"]');	 
