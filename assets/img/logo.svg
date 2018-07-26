@@ -33,8 +33,8 @@
    id="namedview3769"
    showgrid="false"
    inkscape:zoom="28.1"
-   inkscape:cx="2.4653859"
-   inkscape:cy="11.423488"
+   inkscape:cx="1.9849589"
+   inkscape:cy="12.846975"
    inkscape:window-x="0"
    inkscape:window-y="2"
    inkscape:window-maximized="1"
@@ -42,12 +42,12 @@
     <g
    transform="scale(0.512)"
    id="g3765"
-   style="display:inline;fill:#800000"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   style="display:inline;fill:#6d7275;fill-opacity:1"
+   inkscape:export-xdpi="76.800003"
+   inkscape:export-ydpi="76.800003">
         <path
    d="M 614,252 V 138 H 461 V 92 H 401 C 401,41 359,0 308,0 257,0 215,41 215,92 h -62 v 46 H 0 V 850 H 219 V 288 252 Z M 308,30 c 34,0 62,28 62,63 0,34 -28,62 -62,62 -34,0 -62,-28 -62,-62 0,-35 28,-63 62,-63 z m -53,258 v 712 H 870 V 288 Z m 175,540 h -66 v -74 h 66 z m 0,-147 h -66 v -74 h 66 z m 0,-148 h -66 v -73 h 66 z M 760,828 H 496 v -74 h 264 z m 0,-147 H 496 v -74 h 264 z m 0,-148 H 496 v -73 h 264 z"
-   style="display:inline;fill:#800000;fill-rule:nonzero"
+   style="display:inline;fill:#6d7275;fill-opacity:1;fill-rule:nonzero"
    id="path3763"
    inkscape:connector-curvature="0" />
     </g>
