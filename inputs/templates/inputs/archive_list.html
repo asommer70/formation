@@ -9,23 +9,53 @@
 
 <div class="tabs-content" data-tabs-content="input-tabs">
   <div class="tabs-panel is-active" id="archive">
-    <ul>
+
+    <div class="row">
       {% for input in inputs %}
-	<li>
-	  <a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a> - <small>{{input.created_at|date:"m/d/Y f"}}</small>
-	</li>
+	<div class="columns large-4 small-12">
+	  <div class="card" style="width: 300px;">
+	    <div class="card-divider">
+	      <h4><a href="{% url 'inbox:detail' pk=input.pk %}">{{input.form.name}}</a></h4>
+	    </div>
+
+	    <div class="card-section">
+	      {% if input.form.image %}
+		<a href="{% url 'inbox:detail' pk=input.pk %}">
+		  <img src="{{input.form.image.url}}" alt="{{input.form.name}}" class="form-image" />
+		</a>
+		<br/><br/>
+		<small><strong>Created at:</strong> {{input.created_at|date:"m/d/Y f"}}</small>
+	      {% endif %}
+	    </div>
+	  </div>
+	</div>
       {% endfor %}
-    </ul>
+    </div>
   </div>
+  
   <div class="tabs-panel" id="approvals">
-    <ul>
+    <div class="row">
       {% for approval in approvals %}
-	<li>
-	  <a href="{% url 'inbox:detail' pk=approval.input.pk %}">
-	    {{approval.input.form.name}}
-	  </a> - <small>{{approval.input.created_at|date:"m/d/Y f"}}</small>
-	</li>
+	<div class="columns large-4 small-12">
+	  <div class="card" style="width: 300px;">
+	    <div class="card-divider">
+	      <h4><a href="{% url 'inbox:detail' pk=approval.input.pk %}">{{approval.input.form.name}}</a></h4>
+	    </div>
+
+	    <div class="card-section">
+	      {% if approval.input.form.image %}
+		<a href="{% url 'inbox:detail' pk=approval.input.pk %}">
+		  <img src="{{approval.input.form.image.url}}" alt="{{approval.input.form.name}}" class="form-image" />
+		</a>
+		<br/><br/>
+		<small><strong>Created at:</strong> {{approval.input.created_at|date:"m/d/Y f"}}</small>
+		<br/>
+		<small><strong>Approved at:</strong> {{approval.created_at|date:"m/d/Y f"}}</small>
+	      {% endif %}
+	    </div>
+	  </div>
+	</div>
       {% endfor %}
-    </ul>
+    </div>
   </div>
 </div>
