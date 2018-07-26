@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block title %}{% if request.path == '/inbox/archive' %}Archive{% else %}Inbox{% endif %}{% endblock %}
+
+{% block body %}
+
+  <h1>Approvals</h1>
+
+
+  <div class="row">
+    {% for approval in approvals %}
+      <div class="columns large-4 small-12">
+	<div class="card" style="width: 300px;">
+	  <div class="card-divider">
+	    <h4><a href="{% url 'inbox:detail' pk=approval.input.pk %}">{{approval.input.form.name}}</a></h4>
+	  </div>
+
+	  <div class="card-section">
+	    {% if approval.input.form.image %}
+	      <a href="{% url 'inbox:detail' pk=approval.input.pk %}">
+		<img src="{{approval.input.form.image.url}}" alt="{{approval.input.form.name}}" class="form-image" />
+	      </a>
+	      <br/><br/>
+	      <small><strong>Created at:</strong> {{approval.input.created_at|date:"m/d/Y f"}}</small>
+	      <br/>
+	      <small><strong>Approved at:</strong> {{approval.created_at|date:"m/d/Y f"}}</small>
+	    {% endif %}
+	  </div>
+	</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <ul class="pagination text-center" role="navigation" aria-label="Pagination">
+    {% if page_obj.has_previous %}
+      <li class="pagination-previous"><a href="?page={{ page_obj.previous_page_number }}">Previous <span class="show-for-sr">page</span></a></li>
+    {% endif %}
+
+    <li><a href="#" aria-label="Page {{page_obj.number}}">{{page_obj.number}}</a></li>
+
+    {% if page_obj.has_next %}
+      <li class="pagination-next"><a href="?page={{ page_obj.next_page_number }}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
+    {% endif %}
+  </ul>
+
+  <br/>
+  {% if not approvals %}
+    <p>No Approvals at this time.</p>
+  {% endif %}
+
+{% endblock %}

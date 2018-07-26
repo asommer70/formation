@@ -98,4 +98,4 @@ class Attachment(models.Model):
     upload = models.FileField(blank=True, null=True, upload_to='%Y/%m/')
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['created_at']

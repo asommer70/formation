@@ -101,6 +101,18 @@ class ArchiveListView(LoginRequiredMixin, ListView):
             'input_id',
             '-created_at').distinct('input_id')
         return context
+
+
+class ApprovalListView(LoginRequiredMixin, ListView):
+    context_object_name = 'approvals'
+    model = Approval
+    paginate_by = 6
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(ApprovalListView, self).get_queryset(*args, **kwargs).filter(
+            user=self.request.user
+        )
+        return qs
     
 
 @login_required()
