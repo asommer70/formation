@@ -10,5 +10,17 @@ $(document).ready(function() {
     });
   }
 
+  // Submit search.
+  var $searchInput = $('#search-input');
+  $searchInput.keydown(function(event) {
+    if (event.which === 13) {
+      window.location.href = '/inbox/?search=' + $searchInput.val();
+    }
+  });
+
+  $('#search-button').click(function(event) {
+    event.preventDefault();
+    window.location.href = '/inbox/?search=' + $searchInput.val();
+  });
 
 });

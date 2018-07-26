@@ -23,14 +23,28 @@ User = get_user_model()
 class InputListView(LoginRequiredMixin, ListView):
     context_object_name = 'inputs'
     model = Input
-    paginate_by = 10
+    # paginate_by = 10 # Might look into a better way to do this later...
+    table_pagination = False
 
     def get_queryset(self, *args, **kwargs):
-        qs = super(InputListView, self).get_queryset(*args, **kwargs).filter(
-            Q(user=self.request.user) | Q(route_holder=self.request.user)
-        ).exclude(status='archived')
+        if ('search' in self.request.GET):
+            # Use a raw query to process the search in order to use the
+            # PostgreSQL jsonb_each_text function for searching Input.data values.
+            qs = Input.objects.raw('''
+               select * from inputs_input 
+               join jsonb_each_text(inputs_input.data) e on true 
+               join auth_user on (inputs_input.user_id = auth_user.id)
+               where e.value like %s and
+                     (inputs_input.user_id = %s or
+                     inputs_input.route_holder_id = %s)
+            ''', ['%' + self.request.GET['search'] + '%',
+                  self.request.user.id, self.request.user.id])
+        else:
+            qs = super(InputListView, self).get_queryset(*args, **kwargs).filter(
+                Q(user=self.request.user) | Q(route_holder=self.request.user)
+            ).exclude(status='archived')
         return qs
-
+    
 
 class InputCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     fields = ['data', 'form']

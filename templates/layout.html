@@ -33,6 +33,9 @@
       <div class="top-bar-right">
 	<ul class="dropdown menu" data-dropdown-menu>
 	  {% if request.user.is_authenticated %}
+	    <li><input type="search" id="search-input" placeholder="Search"></li>
+	    <li><button type="button" id="search-button" class="button small">Search</button></li>
+	    <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
 	    <li><a href="/accounts/logout">Logout</a></li>
 	  {% else %}
 	    <li><a href="/accounts/login">Login</a></li>

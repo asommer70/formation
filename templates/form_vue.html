@@ -102,7 +102,8 @@
 	 id: {{input.id}},
 	 route_holder: {% if input.route_holder %}{{input.route_holder.id}}{% else %}{{input.user.id}}{% endif %},
          route_sender: {% if input.route_sender %}{{input.route_sender.id}}{% else %}{{input.user.id}}{% endif %},
-	 user: {{input.user.id}}
+	 user: {{input.user.id}},
+	 status: "{{input.status}}"
        }
      }
      {% endif %}
@@ -358,6 +359,10 @@
 	   console.log('i:', i);
 	   // Add a small pause to add the new row before clicking again.
 	   setTimeout(function() {$button.click()}, 20);
+	 }
+
+	 if (this.input.status === 'archived') {
+	   $button.attr('disabled', true);
 	 }
        }
      }
