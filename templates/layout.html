@@ -19,7 +19,7 @@
     <div class="top-bar">
       <div class="top-bar-left">
 	<ul class="dropdown menu" data-dropdown-menu>
-	  <li><a href="/">Formation</a></li>
+	  <li><a href="/">Forms</a></li>
 	  {% if user.is_authenticated %}
 	  <li>
             <a href="/inbox">
@@ -98,5 +98,30 @@
 
     {% block vue %}
     {% endblock %}
+    <br/><br/>
+    
+    <div class="sticky-footer-css">
+      <div class="row expanded flex-dir-column">
+	<div class="columns shrink footer text-center">
+
+	</div>
+      </div>
+    </div>
+
+    
+
+    <footer class="social-footer">
+      <div class="social-footer-left">
+	<p><strong>Formation</strong>, making forms fun!</p>
+	<p>Brought to you by <a href="https://thehoick.com" target="_blank">The Hoick, LLC</a></p>
+      </div>
+      <div class="social-footer-icons">
+	<ul class="menu simple">
+	</ul>
+      </div>
+    </footer>
+
+
+
   </body>
 </html>

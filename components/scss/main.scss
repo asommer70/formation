@@ -79,3 +79,74 @@ body {
 .form-image {
     height: 140px;
 }
+
+
+// .sticky-footer-css {
+//   height: 100vh;
+//   display: flex;
+// }
+
+// .sticky-footer-css-body {
+//   overflow: auto;
+// }
+
+// .sticky-footer-css {
+//   .header {
+//     background-color: map-get($foundation-palette, primary);
+//     height: 10rem;
+//     color: #fff;
+//     padding: 3rem;
+
+//     .menu a {
+//       color: #fff;
+//     }
+//   }
+
+//   .body-content {
+//     background-color: map-get($foundation-palette, primary);
+//   }
+
+//   .footer {
+//     height: 10rem;
+//     background-color: map-get($foundation-palette, primary);
+//     color: #fff;
+//     padding: 3rem;
+
+//     a {
+// 	color: darken(map-get($foundation-palette, primary), 30%);
+//     }
+
+//     .menu a {
+//       color: #fff;
+//     }
+//   }
+// }
+
+.social-footer {
+  padding: 1rem;
+  background: lighten(map-get($foundation-palette, primary), 30%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  a {
+      color: darken(map-get($foundation-palette, primary), 30%);
+  }
+
+  .social-footer-icons {
+    li:last-of-type {
+      margin-right: 0;
+    }
+
+    .fa {
+      font-size: 1.3rem;
+      color: $white;
+
+      &:hover {
+        color: darken(map-get($foundation-palette, primary), 50%);
+        transition: color 0.3s ease-in;
+      }
+    }
+  }
+}
+
