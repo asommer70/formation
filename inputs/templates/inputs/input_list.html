@@ -9,6 +9,17 @@
   {% else %}
     <h1>Inbox</h1>
 
+    
+    {%  if 'search' in request.GET %}
+      <p>
+	{% if not inputs.num_rows %}
+	  No matches found for <em>{{request.GET.search}}</em>.
+	{% else %}
+	  {{inputs.num_rows}} matches found for <em>{{request.GET.search}}</em>.
+	  {% endif %}
+      </p>
+    {% endif %}
+    
     <div class="row">
       {% for input in inputs %}
 	<div class="columns large-4 small-12">

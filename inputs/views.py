@@ -31,14 +31,18 @@ class InputListView(LoginRequiredMixin, ListView):
             # Use a raw query to process the search in order to use the
             # PostgreSQL jsonb_each_text function for searching Input.data values.
             qs = Input.objects.raw('''
-               select * from inputs_input 
+               select count(*) as num_rows, * from inputs_input 
                join jsonb_each_text(inputs_input.data) e on true 
                join auth_user on (inputs_input.user_id = auth_user.id)
                where e.value like %s and
                      (inputs_input.user_id = %s or
                      inputs_input.route_holder_id = %s)
+               group by e.key, inputs_input.id, e.value, auth_user.id;
             ''', ['%' + self.request.GET['search'] + '%',
                   self.request.user.id, self.request.user.id])
+
+            # Add the row count.
+            qs.num_rows = sum(1 for q in qs)
         else:
             qs = super(InputListView, self).get_queryset(*args, **kwargs).filter(
                 Q(user=self.request.user) | Q(route_holder=self.request.user)
