@@ -4,7 +4,12 @@
 
 
 html, body {
-    background-color: #93ac9d;
+    background-color: $dark-gray;
+    height: 100%;
+}
+
+.container {
+    min-height: 500px;
 }
 
 .form-content {
@@ -19,6 +24,10 @@ html, body {
 
 .form-buttons, .form-comments, .form-attachments, .form-routing, .form-approvals {
     background-color: white;
+}
+
+#id_name {
+    width: 500px;
 }
 
 
@@ -81,56 +90,17 @@ html, body {
 }
 
 
-// .sticky-footer-css {
-//   height: 100vh;
-//   display: flex;
-// }
-
-// .sticky-footer-css-body {
-//   overflow: auto;
-// }
-
-// .sticky-footer-css {
-//   .header {
-//     background-color: map-get($foundation-palette, primary);
-//     height: 10rem;
-//     color: #fff;
-//     padding: 3rem;
-
-//     .menu a {
-//       color: #fff;
-//     }
-//   }
-
-//   .body-content {
-//     background-color: map-get($foundation-palette, primary);
-//   }
-
-//   .footer {
-//     height: 10rem;
-//     background-color: map-get($foundation-palette, primary);
-//     color: #fff;
-//     padding: 3rem;
-
-//     a {
-// 	color: darken(map-get($foundation-palette, primary), 30%);
-//     }
-
-//     .menu a {
-//       color: #fff;
-//     }
-//   }
-// }
-
 .social-footer {
   padding: 1rem;
-  background: lighten(map-get($foundation-palette, primary), 30%);
+  // background: lighten(map-get($foundation-palette, primary), 30%);
+  background: $light-gray;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: absolute;
-  bottom: 0;
+  // position: fixed;
+  // bottom: 0;
   width: 100%;
+  margin-top: 20px;
 
   a {
       color: darken(map-get($foundation-palette, primary), 30%);
