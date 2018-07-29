@@ -28,9 +28,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '8pg^^##x0+7q%z^r(jd3oq++#q%g(#j=z$o)^_i+zkhe3*%4)-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'linux']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'linux', 'formation']
 
 
 # Application definition
@@ -136,6 +136,7 @@ STATIC_URL = '/assets/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'assets'),
 )
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
