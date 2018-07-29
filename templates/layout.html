@@ -19,16 +19,18 @@
     <div class="top-bar">
       <div class="top-bar-left">
 	<ul class="dropdown menu" data-dropdown-menu>
-	  <li><a href="/">Forms</a></li>
 	  {% if user.is_authenticated %}
-	  <li>
+	  <li id="forms-menu-item"><a href="/">Forms</a></li>
+	  <li id="inbox-menu-item">
             <a href="/inbox">
 	      Inbox
 	      <span id="inbox-count" class="badge">{{user|inbox_count}}</span>
 	    </a>
 	  </li>
-	  <li><a href="/inbox/archive">Archive</a></li>
-	  <li><a href="/inbox/approvals">Approvals</a></li>
+	  <li id="archive-menu-item"><a href="/inbox/archive">Archive</a></li>
+	  <li id="approvals-menu-item"><a href="/inbox/approvals">Approvals</a></li>
+	  {% else %}
+	  <li><a href="/">Formation</a></li>
 	  {% endif %}
 	</ul>
       </div>
@@ -43,7 +45,7 @@
 	    <li><a href="/accounts/login">Login</a></li>
 	  {% endif %}
 	  {% if user.is_authenticated and user|has_group:"Admin" %}
-	  <li class="has-submenu">
+	  <li id="admin-menu-item" class="has-submenu">
             <a href="/form-admin">Admin</a>
             <ul class="submenu menu vertical" data-dropdown-menu>
 	      {% if user.is_superuser %}
