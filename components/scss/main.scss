@@ -3,7 +3,7 @@
 @import 'includes';
 
 
-body {
+html, body {
     background-color: #93ac9d;
 }
 
@@ -128,6 +128,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 
   a {
       color: darken(map-get($foundation-palette, primary), 30%);
