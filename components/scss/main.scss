@@ -57,6 +57,14 @@ html, body {
     z-index: 99;
 }
 
+.autocomplete-item {
+    cursor: pointer;
+
+    &:hover {
+	background: $light-gray;
+    }
+}
+
 .dest-close {
     float: right !important;
 }

@@ -42,19 +42,19 @@
      <div>
        <input type="text" 
 	      v-model="item" 
-              :name="name" 
-              @keydown="filterItems" 
+       :name="name" 
+       @keydown="filterItems" 
               data-toggle="send-to-user-dropdown"
               id="send-to-user"
 	      autocomplete="off" 
-              :placeholder="title" />
-       <div class="dropdown-pane" id="send-to-user-dropdown" data-dropdown>
+       :placeholder="title" />
+     <div class="dropdown-pane" id="send-to-user-dropdown" data-dropdown>
 	 <ul class="no-bullet">
-	   <li v-for="item in filteredItems" @click="setItem(item)">
+	   <li class="autocomplete-item" v-for="item in filteredItems" @click="setItem(item)">
 	     <% item[label] %>
 	   </li>
 	 </ul>
-       </div>
+     </div>
      </div>
    `,
 
@@ -206,24 +206,46 @@
      routeForm: function(event) {
        console.log('app routeForm... event:', event);
        var self = this;
-       
-       $.ajax({
-	 url: '/api/inbox/' + this.input.id,
-	 method: 'patch',
-	 data: {status: 'routed', route_holder: this.next_user.id, route_sender: userId},
-	 headers: {
-	   Authorization: 'Token ' + token,
-	   contentType: 'application/json; charset=utf-8'
-	 },
-	 success: function(data) {
-	   console.log('app routeForm patch data:', data);
-	   if (self.input.user == parseInt(userId)) {
-	     window.location.reload();
-	   } else {
-	     window.location.href = '/inbox';
+
+       // Lookup the next_user if the username was typed into the field.
+       if (this.next_user.id === undefined) {
+	 this.next_user = this.users.filter(function(user) {
+	   if (user.username === $('#send-to-user').val()) {
+	     return user;
 	   }
+	 })[0];
+
+	 // If typed in user isn't found set next_user to emtpy string (default value).
+	 if (this.next_user === undefined) {
+	   this.next_user = '';
 	 }
-       });
+       }
+
+       if (this.next_user.id) {
+	 $.ajax({
+	   url: '/api/inbox/' + this.input.id,
+	   method: 'patch',
+	   data: {status: 'routed', route_holder: this.next_user.id, route_sender: userId},
+	   headers: {
+	     Authorization: 'Token ' + token,
+	     contentType: 'application/json; charset=utf-8'
+	   },
+	   success: function(data) {
+	     console.log('app routeForm patch data:', data);
+	     if (self.input.user == parseInt(userId)) {
+	       window.location.reload();
+	     } else {
+	       window.location.href = '/inbox';
+	     }
+	   }
+	 });
+       } else {
+	 $('#send-to-user-error').html($('#send-to-user').val());
+	 $routeError = $('#route-error');
+	 if ($routeError.hasClass('hide')) {
+	   $('#route-error').removeClass('hide');
+	 }
+       }
      },
 
      archiveForm: function(event) {

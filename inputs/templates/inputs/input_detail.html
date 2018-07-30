@@ -105,11 +105,15 @@
 		:items="users"
 		label="username"
 		class="inline"></autocomplete>
+
+	      <div id="route-error" class="callout alert hide" data-closable>
+		<p>Can't send form to <em id="send-to-user-error"></em></p>
+	      </div>
 	    </div>
 
 	    <div class="columns large-4">
-	      <button type="button" class="button small" title="Send" @click="routeForm">&#x27A4;</button>
-	      <button type="button" class="button small success float-right" title="Archive" @click="archiveForm">&#9745;</button>
+	      <button type="button" class="button small" title="Send" @click="routeForm">&#x27A4; Send</button>
+	      <button type="button" class="button small success float-right" title="Archive" @click="archiveForm">&#9745; Archive</button>
 	    </div>
 	  </div>
 	{% endif %}
