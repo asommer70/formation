@@ -146,6 +146,20 @@
 	   console.log('post data:', data);
 	   localStorage.setItem('form_' + self.pathParts[self.pathParts.length - 1], null);
 
+	   // Lookup the next_user if the username was typed into the field.
+	   if (self.next_user.id === undefined) {
+	     self.next_user = self.users.filter(function(user) {
+	       if (user.username === $('#send-to-user').val()) {
+		 return user;
+	       }
+	     })[0];
+
+	     // If typed in user isn't found set next_user to emtpy string (default value).
+	     if (self.next_user === undefined) {
+	       self.next_user = '';
+	     }
+	   }
+
 	   // Create the comment if the comment field isn't blank.
 	   if ($('#comment').val().length) {
 	     $.ajax({
@@ -158,34 +172,51 @@
 	       },
 	       success: function(commentData) {
 		 console.log('app createComment post data:', commentData);
-
-		 // Send the new Input to the next_user. 
-		   if (self.next_user !== '') {
-		     $.ajax({
-		       url: '/api/inbox/' + data.id,
-		       method: 'patch',
-		       data: {status: 'routed', route_holder: self.next_user.id, route_sender: userId},
-		       headers: {
-			 Authorization: 'Token ' + token,
-			 contentType: 'application/json; charset=utf-8'
-		       },
-		       success: function(sendData) {
-			 console.log('app submitForm send patch data:', sendData);
-			 self.addCreationAttachment(data.id);
-		       }
-		     });
-		   } else {
-		     // Create attachemnt.
+		 
+		 // Send the new Input to the next_user.
+		 if (self.next_user !== '') {
+		   $.ajax({
+		     url: '/api/inbox/' + data.id,
+		     method: 'patch',
+		     data: {status: 'routed', route_holder: self.next_user.id, route_sender: userId},
+		     headers: {
+		       Authorization: 'Token ' + token,
+		       contentType: 'application/json; charset=utf-8'
+		     },
+		     success: function(sendData) {
+		       console.log('app submitForm send patch data:', sendData);
 		       self.addCreationAttachment(data.id);
-		   }
+		     }
+		   });
+		 } else {
+		   // Create attachemnt.
+		     self.addCreationAttachment(data.id);
+		 }
 	       },
 	       error: function(err) {
 		 console.log('Error creating comment, err:', err);
 	       }
 	     });
 	   } else {
-	     // If attachment is set set the attachment form action attribute and submit the form.
-	     self.addCreationAttachment(data.id);
+	     // Send the form if self.next_user isn't blank.
+	     if (self.next_user !== '') {
+	       $.ajax({
+		 url: '/api/inbox/' + data.id,
+		 method: 'patch',
+		 data: {status: 'routed', route_holder: self.next_user.id, route_sender: userId},
+		 headers: {
+		   Authorization: 'Token ' + token,
+		   contentType: 'application/json; charset=utf-8'
+		 },
+		 success: function(sendData) {
+		   console.log('app submitForm send patch data:', sendData);
+		   self.addCreationAttachment(data.id);
+		 }
+	       });
+	     } else {
+	       // Create attachemnt/go to new Input.
+	       self.addCreationAttachment(data.id);
+	     }
 	   }
 	 }
        });
